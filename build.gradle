@@ -1,0 +1,28 @@
+apply plugin: 'java'
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+version = '1.0'
+
+repositories {
+	mavenCentral()
+}
+
+ext {
+	springVersion = "4.0.1.RELEASE"
+}
+
+dependencies {
+	compile "org.slf4j:slf4j-api:1.7.5"
+	compile "org.springframework:spring-context:${springVersion}"
+	compile "com.google.guava:guava:15.0"
+	testCompile "org.springframework:spring-test:${springVersion}"
+	testCompile "org.spockframework:spock-core:0.7-groovy-2.0"
+	testCompile "org.spockframework:spock-spring:0.7-groovy-2.0"
+	testCompile "org.kubek2k:springockito-annotations:1.0.9"
+	testCompile "org.mockito:mockito-all:1.9.5"
+}
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '1.10'
+}
