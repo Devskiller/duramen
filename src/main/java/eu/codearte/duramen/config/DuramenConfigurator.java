@@ -2,6 +2,7 @@ package eu.codearte.duramen.config;
 
 import eu.codearte.duramen.EventBus;
 import eu.codearte.duramen.handler.EventHandler;
+import org.h2.Driver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -10,9 +11,12 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.GenericTypeResolver;
+import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.stereotype.Component;
 
 import java.lang.invoke.MethodHandles;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Map;
 
@@ -54,6 +58,16 @@ public class DuramenConfigurator implements ApplicationListener<ContextRefreshed
 					eventHandler.getClass().getSimpleName(),
 					generic.getSimpleName());
 			eventBus.register(generic.getCanonicalName(), eventHandler);
+		}
+
+		SimpleDriverDataSource dataSource = new SimpleDriverDataSource(new Driver(), "jdbc:h2:file:/tmp/test/db.h2");
+		try {
+			Connection connection = dataSource.getConnection();
+			connection.prepareStatement("CREATE TABLE EVENTS (NAME VARCHAR(255))").executeUpdate();
+			connection.prepareStatement("INSERT INTO TEST VALUES('Hello')");
+			connection.prepareStatement("select * from test").executeQuery();
+		} catch (SQLException e) {
+			throw new IllegalStateException(e);
 		}
 	}
 }
