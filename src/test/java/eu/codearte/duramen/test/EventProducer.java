@@ -18,6 +18,8 @@ public class EventProducer {
 	}
 
 	public void produce() {
-		consumer.publish(new TestEvent());
+		TestEvent event = new TestEvent();
+		event.setTest("Test string");
+		consumer.publish(event);
 	}
 }
