@@ -1,22 +1,17 @@
 package eu.codearte.duramen;
 
 import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.ByteBufferOutput;
 import com.esotericsoftware.kryo.io.FastOutput;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import com.esotericsoftware.kryo.io.UnsafeMemoryOutput;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import eu.codearte.duramen.datastore.Datastore;
+import eu.codearte.duramen.config.EvenBusContext;
 import eu.codearte.duramen.event.Event;
 import eu.codearte.duramen.handler.EventHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -27,15 +22,16 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Component
 public class EventBus {
 
-	private final Datastore datastore;
+	private final EvenBusContext evenBusContext;
 
-	private Multimap<String, EventHandler> handlers = HashMultimap.create();
+	private final Multimap<String, EventHandler> handlers;
 
 	private final Kryo kryo;
 
 	@Autowired
-	public EventBus(Datastore datastore) {
-		this.datastore = datastore;
+	public EventBus(EvenBusContext evenBusContext) {
+		this.evenBusContext = evenBusContext;
+		handlers = HashMultimap.create();
 		kryo = new Kryo();
 	}
 
@@ -44,24 +40,29 @@ public class EventBus {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void publish(Event event) {
+	public void publish(final Event event) {
 		checkNotNull(event);
-		Output output = new FastOutput(4096);
+		Output output = new FastOutput(evenBusContext.getMaxMessageSize());
 		kryo.writeClassAndObject(output, event);
-		Long eventId = datastore.saveEvent(output.toBytes());
-		processEvent(eventId, event);
+		final Long eventId = evenBusContext.getDatastore().saveEvent(output.toBytes());
+		evenBusContext.getExecutorService().submit(new Runnable() {
+			@Override
+			public void run() {
+				processEvent(eventId, event);
+			}
+		});
 	}
 
 	private void processEvent(Long eventId, Event event) {
 		for (EventHandler handler : handlers.get(event.getClass().getCanonicalName())) {
 			handler.onEvent(event);
 		}
-		datastore.deleteEvent(eventId);
+		evenBusContext.getDatastore().deleteEvent(eventId);
 	}
 
 	@SuppressWarnings("unchecked")
 	public void processSavedEvents() {
-		Map<Long, byte[]> events = datastore.getStoredEvents();
+		Map<Long, byte[]> events = evenBusContext.getDatastore().getStoredEvents();
 		for (Long eventId : events.keySet()) {
 			Input input = new Input(events.get(eventId));
 			processEvent(eventId, (Event) kryo.readClassAndObject(input));

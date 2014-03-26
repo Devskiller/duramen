@@ -15,8 +15,4 @@ import org.springframework.context.annotation.Configuration;
 @EnableDuramen
 public class SampleConfiguration {
 
-	@Bean
-	public Datastore datastore() {
-		return new EmbeddedH2("/tmp/duramen.data");
-	}
 }
