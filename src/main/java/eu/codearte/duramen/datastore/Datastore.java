@@ -11,5 +11,5 @@ public interface Datastore {
 
 	void deleteEvent(Long eventId);
 
-	Map<Long,byte[]> getStoredEvents();
+	Map<Long, byte[]> getStoredEvents();
 }

@@ -53,6 +53,7 @@ public class EventBus {
 		});
 	}
 
+	@SuppressWarnings("unchecked")
 	private void processEvent(Long eventId, Event event) {
 		for (EventHandler handler : handlers.get(event.getClass().getCanonicalName())) {
 			handler.onEvent(event);

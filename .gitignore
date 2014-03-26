@@ -1,5 +1,5 @@
-.gradle
-.idea
-build
+.idea/
 duramen.iml
-out
+.gradle/
+build/
+out/
