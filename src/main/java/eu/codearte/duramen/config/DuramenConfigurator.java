@@ -22,7 +22,7 @@ import java.util.Map;
 @Component
 public class DuramenConfigurator implements ApplicationListener<ContextRefreshedEvent> {
 
-	private final static Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+	private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent event) {

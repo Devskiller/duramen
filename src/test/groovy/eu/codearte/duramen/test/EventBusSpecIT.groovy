@@ -27,6 +27,6 @@ class EventBusSpecIT extends Specification {
 		when:
 			eventProducer.produce()
 		then:
-			verify(eventConsumer, timeout(500).times(1)).onEvent(isA(TestEvent))
+			verify(eventConsumer, timeout(500)).onEvent(isA(TestEvent))
 	}
 }

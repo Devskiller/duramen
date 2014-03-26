@@ -1,6 +1,5 @@
 package eu.codearte.duramen.datastore;
 
-import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import org.h2.Driver;
 import org.springframework.context.ResourceLoaderAware;
@@ -40,6 +39,7 @@ public class EmbeddedH2 implements Datastore, ResourceLoaderAware {
 	private JdbcTemplate jdbcTemplate;
 	private SimpleDriverDataSource dataSource;
 
+	@SuppressWarnings("UnusedDeclaration")
 	public EmbeddedH2() {
 		this(DEFAULT_FILENAME);
 	}
@@ -92,7 +92,7 @@ public class EmbeddedH2 implements Datastore, ResourceLoaderAware {
 		return jdbcTemplate.query("select id, event from EVENTS", new ResultSetExtractor<Map<Long, byte[]>>() {
 			@Override
 			public Map<Long, byte[]> extractData(ResultSet rs) throws SQLException, DataAccessException {
-				HashMap<Long, byte[]> result = new HashMap<>();
+				Map<Long, byte[]> result = new HashMap<>();
 				while (rs.next()) {
 					result.put(rs.getLong("id"), rs.getBytes("event"));
 				}

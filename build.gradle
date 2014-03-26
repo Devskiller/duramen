@@ -3,7 +3,7 @@ apply plugin: 'groovy'
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
-version = '1.0'
+version = '0.0.5-SNAPSHOT'
 
 repositories {
 	mavenCentral()
@@ -11,10 +11,11 @@ repositories {
 
 ext {
 	springVersion = "4.0.1.RELEASE"
+	slf4jVersion = "1.7.6"
 }
 
 dependencies {
-	compile "org.slf4j:slf4j-api:1.7.5"
+	compile "org.slf4j:slf4j-api:${slf4jVersion}"
 	compile "org.springframework:spring-context:${springVersion}"
 	compile "org.springframework:spring-jdbc:${springVersion}"
 	compile "com.google.guava:guava:15.0"
@@ -25,6 +26,8 @@ dependencies {
 	testCompile "org.spockframework:spock-spring:0.7-groovy-2.0"
 	testCompile "org.kubek2k:springockito-annotations:1.0.9"
 	testCompile "org.mockito:mockito-all:1.9.5"
+	testCompile "ch.qos.logback:logback-classic:1.1.1"
+	testCompile "org.slf4j:jcl-over-slf4j:${slf4jVersion}"
 }
 
 task wrapper(type: Wrapper) {
