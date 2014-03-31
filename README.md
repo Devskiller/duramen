@@ -18,7 +18,7 @@ Persistent event bus implementation for Java. Easily integrates with Spring Fram
 ```
 3. Implement custom event class:
  ```java
- public class SampleEvent extends Event {
+ public class FooEvent extends Event {
     private String message;
  
     // getters and setters
@@ -29,12 +29,12 @@ Persistent event bus implementation for Java. Easily integrates with Spring Fram
  import eu.codearte.duramen.EventBus;
  
  @Component
- public class EventProducer {
+ public class FooEventProducer {
  
     private final EventBus eventBus;
    
     @Autowired
-    public EventProducer(EventBus eventBus) {
+    public FooEventProducer(EventBus eventBus) {
 	    this.eventBus = eventBus;
     }
 
@@ -42,7 +42,7 @@ Persistent event bus implementation for Java. Easily integrates with Spring Fram
      * This method will be called from your production code
      */
     public void produce() {
-	    SampleEvent event = new SampleEvent();
+	    FooEvent event = new FooEvent();
 	    event.setMessage("Test message");
 	    eventBus.publish(event);
  	  }
@@ -53,10 +53,10 @@ Persistent event bus implementation for Java. Easily integrates with Spring Fram
  import eu.codearte.duramen.handler.EventHandler;
 
  @Component
- public class EventConsumer implements EventHandler<SampleEvent> {
+ public class FooEventConsumer implements EventHandler<FooEvent> {
 
  	 @Override
-	 public void onEvent(SampleEvent event) {
+	 public void onEvent(FooEvent event) {
 	   System.out.println("Received message: " + event.getMessage());
 	 }
 
