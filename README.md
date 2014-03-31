@@ -1,7 +1,7 @@
 Duramen
 =======
 
-Java persistent event bus
+Persistent event bus implementation for Java. Easily integrates with Spring Framework. By default uses file backed embedded H2 database. Guarantees that event will be dispatched.
 
 ##Usage:
 
