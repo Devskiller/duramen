@@ -24,7 +24,7 @@ Persistent event bus implementation for Java. Easily integrates with Spring Fram
     // getters and setters
  }
 ```
-4. Implement producer component:
+4. To produce events you have to implement producer component:
  ```java
  import eu.codearte.duramen.EventBus;
  
@@ -48,7 +48,7 @@ Persistent event bus implementation for Java. Easily integrates with Spring Fram
  	  }
  }
 ```
-5. Implement consumer:
+5. To receive events you have to implement consumer. Generic type in ```EventHandler``` will decide which events will be processed in particular consumer:
  ```java
  import eu.codearte.duramen.handler.EventHandler;
 
