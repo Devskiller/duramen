@@ -113,7 +113,7 @@ uploadArchives {
 				name 'Duramen'
 				description 'Duramen - Java persistent event bus'
 				packaging 'jar'
-				url 'http://www.jfairy.org'
+				url 'http://codearte.github.io/duramen'
 				licenses {
 					license {
 						name 'The Apache Software License, Version 2.0'
