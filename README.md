@@ -12,7 +12,7 @@ Persistent event bus implementation for Java. Easily integrates with Spring Fram
  @Configuration
  @ComponentScan
  @EnableDuramen
- public class SampleConfiguration {
+ public class FooConfiguration {
  
  }
 ```
