@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Duramen by Codearte</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Duramen</h1>
+        <h2>Java Persistent Event Bus</h2>
+        <a href="https://github.com/Codearte/duramen" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a name="duramen" class="anchor" href="#duramen"><span class="octicon octicon-link"></span></a>Duramen</h1>
+
+<p>Persistent event bus implementation for Java. Easily integrates with Spring Framework. By default uses file backed embedded H2 database. Guarantees that event will be dispatched.</p>
+
+<h2>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage:</h2>
+
+<ol>
+<li>Add duramen dependency: <code>eu.codearte.duramen:duramen:0.5.0</code>
+</li>
+<li>
+<p>Use <code>@EnableDuramen</code> annotation to import Duramen into your project:</p>
+
+<div class="highlight highlight-java"><pre><span class="nd">@Configuration</span>
+<span class="nd">@ComponentScan</span>
+<span class="nd">@EnableDuramen</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">FooConfiguration</span> <span class="o">{</span>
+
+<span class="o">}</span>
+</pre></div>
+</li>
+<li>
+<p>Implement custom event class:</p>
+
+<div class="highlight highlight-java"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">FooEvent</span> <span class="kd">extends</span> <span class="n">Event</span> <span class="o">{</span>
+  <span class="kd">private</span> <span class="n">String</span> <span class="n">message</span><span class="o">;</span>
+
+  <span class="c1">// getters and setters</span>
+<span class="o">}</span>
+</pre></div>
+</li>
+<li>
+<p>To produce events you have to implement producer component:</p>
+
+<div class="highlight highlight-java"><pre><span class="kn">import</span> <span class="nn">eu.codearte.duramen.EventBus</span><span class="o">;</span>
+
+<span class="nd">@Component</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">FooEventProducer</span> <span class="o">{</span>
+
+  <span class="kd">private</span> <span class="kd">final</span> <span class="n">EventBus</span> <span class="n">eventBus</span><span class="o">;</span>
+
+  <span class="nd">@Autowired</span>
+  <span class="kd">public</span> <span class="nf">FooEventProducer</span><span class="o">(</span><span class="n">EventBus</span> <span class="n">eventBus</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">this</span><span class="o">.</span><span class="na">eventBus</span> <span class="o">=</span> <span class="n">eventBus</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="cm">/** </span>
+<span class="cm">   * This method will be called from your production code</span>
+<span class="cm">   */</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">produce</span><span class="o">()</span> <span class="o">{</span>
+      <span class="n">FooEvent</span> <span class="n">event</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FooEvent</span><span class="o">();</span>
+      <span class="n">event</span><span class="o">.</span><span class="na">setMessage</span><span class="o">(</span><span class="s">"Test message"</span><span class="o">);</span>
+      <span class="n">eventBus</span><span class="o">.</span><span class="na">publish</span><span class="o">(</span><span class="n">event</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</li>
+<li>
+<p>To receive events you have to implement consumer. Generic type in <code>EventHandler</code> will decide which events will be processed in particular consumer:</p>
+
+<div class="highlight highlight-java"><pre><span class="kn">import</span> <span class="nn">eu.codearte.duramen.handler.EventHandler</span><span class="o">;</span>
+
+<span class="nd">@Component</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">FooEventConsumer</span> <span class="kd">implements</span> <span class="n">EventHandler</span><span class="o">&lt;</span><span class="n">FooEvent</span><span class="o">&gt;</span> <span class="o">{</span>
+
+   <span class="nd">@Override</span>
+   <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onEvent</span><span class="o">(</span><span class="n">FooEvent</span> <span class="n">event</span><span class="o">)</span> <span class="o">{</span>
+     <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Received message: "</span> <span class="o">+</span> <span class="n">event</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span>
+   <span class="o">}</span>
+
+<span class="o">}</span>
+</pre></div>
+</li>
+</ol>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/Codearte/duramen/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/Codearte/duramen/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/Codearte/duramen"></a> is maintained by <a href="https://github.com/Codearte">Codearte</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
