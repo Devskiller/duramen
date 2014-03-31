@@ -25,7 +25,6 @@ public class EventBus {
 	private final EvenBusContext evenBusContext;
 
 	private final Multimap<String, EventHandler> handlers;
-
 	private final Kryo kryo;
 
 	@Autowired
