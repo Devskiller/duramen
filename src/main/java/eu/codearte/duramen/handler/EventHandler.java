@@ -3,7 +3,9 @@ package eu.codearte.duramen.handler;
 import eu.codearte.duramen.event.Event;
 
 /**
- * Created by jkubrynski@gmail.com / 2014-02-10
+ * Implement that interface in your event handler to receive events of generic E class
+ *
+ * @author Jakub Kubrynski
  */
 public interface EventHandler<E extends Event> {
 	void onEvent(E event);
