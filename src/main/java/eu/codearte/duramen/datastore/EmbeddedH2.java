@@ -30,7 +30,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 @Component
 public class EmbeddedH2 implements Datastore, ResourceLoaderAware {
 
-	private static final String DEFAULT_FILENAME = "duramen.data";
+	private static final String DEFAULT_FILENAME = "jdbc:h2:file:duramen.data";
 
 	private ResourceLoader resourceLoader;
 
@@ -56,12 +56,12 @@ public class EmbeddedH2 implements Datastore, ResourceLoaderAware {
 
 	@PostConstruct
 	public void init() throws SQLException {
-		dataSource = new SimpleDriverDataSource(new Driver(), "jdbc:h2:file:" + filename);
+		dataSource = new SimpleDriverDataSource(new Driver(), filename);
 		DatabaseMetaData metaData = dataSource.getConnection().getMetaData();
 		ResultSet events = metaData.getTables(null, null, "EVENTS", null);
 		if (!events.next()) {
 			ResourceDatabasePopulator databasePopulator = new ResourceDatabasePopulator();
-			databasePopulator.addScript(resourceLoader.getResource("datastore.sql"));
+			databasePopulator.addScript(resourceLoader.getResource("classpath:datastore.sql"));
 			databasePopulator.populate(dataSource.getConnection());
 		}
 		jdbcTemplate = new JdbcTemplate(dataSource);

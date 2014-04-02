@@ -47,7 +47,7 @@ public class DuramenConfiguration {
 			executorService = Executors.newFixedThreadPool(maxProcessingThreads);
 		}
 		if (datastore == null) {
-			datastore = new EmbeddedH2("/tmp/duramen.data");
+			datastore = new EmbeddedH2("jdbc:h2:file:/tmp/duramen.data");
 			autowireCapableBeanFactory.initializeBean(datastore, "duramenDatastoreBean");
 		}
 		return new EvenBusContext(maxMessageSize, executorService, datastore);
