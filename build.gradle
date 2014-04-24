@@ -33,7 +33,7 @@ dependencies {
 	compile "org.springframework:spring-jdbc:${springVersion}"
 	compile "com.google.guava:guava:15.0"
 	compile "com.h2database:h2:1.3.175"
-	compile "com.esotericsoftware.kryo:kryo:2.22"
+	compile "com.esotericsoftware.kryo:kryo:2.23.0"
 	testCompile "org.springframework:spring-test:${springVersion}"
 	testCompile "org.spockframework:spock-core:0.7-groovy-2.0"
 	testCompile "org.spockframework:spock-spring:0.7-groovy-2.0"

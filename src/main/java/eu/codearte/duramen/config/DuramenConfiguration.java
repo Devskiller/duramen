@@ -13,6 +13,8 @@ import org.springframework.context.annotation.FilterType;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by jkubrynski@gmail.com / 2014-02-10
@@ -32,6 +34,10 @@ public class DuramenConfiguration {
 	private Integer maxProcessingThreads = 1;
 
 	@Autowired(required = false)
+	@Qualifier("useDaemonThreads")
+	private Boolean useDaemonThreads = true;
+
+	@Autowired(required = false)
 	private Datastore datastore;
 
 	@Autowired(required = false)
@@ -44,12 +50,26 @@ public class DuramenConfiguration {
 	@Bean
 	public EvenBusContext evenBusProperties() {
 		if (executorService == null) {
-			executorService = Executors.newFixedThreadPool(maxProcessingThreads);
+			executorService = Executors.newFixedThreadPool(maxProcessingThreads, buildThreadFactory());
 		}
 		if (datastore == null) {
 			datastore = new EmbeddedH2("jdbc:h2:file:/tmp/duramen.data");
 			autowireCapableBeanFactory.initializeBean(datastore, "duramenDatastoreBean");
 		}
 		return new EvenBusContext(maxMessageSize, executorService, datastore);
+	}
+
+	protected ThreadFactory buildThreadFactory() {
+		final AtomicInteger threadNumerator = new AtomicInteger(0);
+
+		return new ThreadFactory() {
+			@Override
+			public Thread newThread(Runnable r) {
+				Thread thread = new Thread(r);
+				thread.setDaemon(useDaemonThreads);
+				thread.setName("DuramenProcessingThread-" + threadNumerator.incrementAndGet());
+				return thread;
+			}
+		};
 	}
 }
