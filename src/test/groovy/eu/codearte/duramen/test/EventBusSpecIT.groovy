@@ -1,7 +1,7 @@
 package eu.codearte.duramen.test
 
-import org.kubek2k.springockito.annotations.ReplaceWithMock
 import org.kubek2k.springockito.annotations.SpringockitoAnnotatedContextLoader
+import org.kubek2k.springockito.annotations.WrapWithSpy
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
@@ -20,7 +20,7 @@ class EventBusSpecIT extends Specification {
 	EventProducer eventProducer
 
 	@Autowired
-	@ReplaceWithMock
+	@WrapWithSpy
 	EventConsumer eventConsumer
 
 	def "should publish and receive event"() {
