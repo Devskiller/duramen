@@ -9,7 +9,6 @@ import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.FilterType;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -21,8 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @SuppressWarnings("FieldCanBeLocal")
 @Configuration
-@ComponentScan(basePackageClasses = DuramenPackageMarker.class,
-		excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = Datastore.class))
+@ComponentScan(basePackageClasses = DuramenPackageMarker.class)
 public class DuramenConfiguration {
 
 	@Autowired(required = false)

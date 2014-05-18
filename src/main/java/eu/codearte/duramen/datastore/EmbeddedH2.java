@@ -11,7 +11,6 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.sql.Connection;
@@ -27,7 +26,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 /**
  * Created by Jakub Kubrynski / 2014-03-25
  */
-@Component
 public class EmbeddedH2 implements Datastore, ResourceLoaderAware {
 
 	private static final String DEFAULT_FILENAME = "jdbc:h2:file:duramen.data";

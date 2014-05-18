@@ -1,9 +1,6 @@
 package eu.codearte.duramen.test;
 
 import eu.codearte.duramen.annotation.EnableDuramen;
-import eu.codearte.duramen.datastore.Datastore;
-import eu.codearte.duramen.datastore.EmbeddedH2;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
