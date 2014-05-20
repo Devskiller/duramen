@@ -31,14 +31,14 @@
           <h1>
 <a name="duramen" class="anchor" href="#duramen"><span class="octicon octicon-link"></span></a>Duramen</h1>
 
-<p>Persistent event bus implementation for Java. Easily integrates with Spring Framework. By default uses file backed embedded H2 database. Guarantees that event will be dispatched.</p>
+<p>Persistent event bus implementation for Java. Easily integrates with Spring Framework. By default uses file backed database. Guarantees that event will be dispatched.</p>
 
 <h2>
 <a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage:</h2>
 
 <ol>
 <li>Add duramen dependency:
-eu.codearte.duramen:duramen:0.7.0</li>
+eu.codearte.duramen:duramen:0.8.0</li>
 <li>
 <p>Use <code>@EnableDuramen</code> annotation to import Duramen into your project:</p>
 
@@ -120,6 +120,8 @@ eu.codearte.duramen:duramen:0.7.0</li>
 
 <p>When <code>EventHandler</code> processing bean throws an exception, it will be logged with event data serialized to JSON.</p>
 
+<p>You can specify custom <code>ExceptionHandler</code> by creating bean implementing <code>eu.codearte.duramen.handler.ExceptionHandler</code> interface.</p>
+
 <h2>
 <a name="available-datastores" class="anchor" href="#available-datastores"><span class="octicon octicon-link"></span></a>Available datastores</h2>
 
@@ -166,6 +168,12 @@ To change defaults you need create own bean:</p>
     <span class="k">return</span> <span class="nf">EmbeddedH2</span><span class="o">(</span><span class="s">"jdbc:h2:file:/tmp/duramen.data"</span><span class="o">);</span>
   <span class="o">}</span>
 </pre></div>
+
+<h3>
+<a name="relational-db" class="anchor" href="#relational-db"><span class="octicon octicon-link"></span></a>Relational DB</h3>
+
+<p>If you want to use your own relational database as a <code>Datastore</code> it is of course possible. 
+You just need to create class extending <code>eu.codearte.duramen.datastore.RelationalDB</code></p>
 
 <h3>
 <a name="in-memory" class="anchor" href="#in-memory"><span class="octicon octicon-link"></span></a>In memory</h3>
