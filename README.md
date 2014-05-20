@@ -63,7 +63,7 @@ Persistent event bus implementation for Java. Easily integrates with Spring Fram
  }
 ```
 
-== Testing:
+##Testing:
 
 Usually in test scope we don't want to persist our events. To achieve such behaviour we can configure custom bean:
 ```java
@@ -75,15 +75,15 @@ Usually in test scope we don't want to persist our events. To achieve such behav
  }
 ```
 
-== Error handling:
+##Error handling:
 
 When ```EventHandler``` processing bean throws an exception, it will be logged with event data serialized to JSON.
 
-== Available datastores
+##Available datastores
 
 In Duramen there are 3 ```Datastore``` objects.
 
-=== FileData
+###FileData
 
 Default implementation. Backed by [HugeCollections](https://github.com/OpenHFT/HugeCollections) SharedHashMap. It stores events in binary file (by default duramen.data).
 To use this implementation you don't have to do anything, as long as you accept default values (max 1000 concurrent entries each 4096 bytes).
@@ -105,7 +105,7 @@ To change defaults you need create own bean:
   }
 ```
 
-=== Embedded H2
+###Embedded H2
 
 You can also use embedded H2 database.
 
@@ -125,15 +125,15 @@ You can also use embedded H2 database.
   }
 ```
 
-=== In memory
+###In memory
 
 We've already described ```InMemory``` datastore in "Testing" section
 
-== Customizing default configuration:
+##Customizing default configuration:
 
 As you can see to use Duramen no configuration is required. However if you want, there are some options to customize.
 
-=== Specifying message size:
+###Specifying message size:
 
 By default message size is set to 4096 bytes. You can change this value by defining bean:
 
@@ -144,7 +144,7 @@ By default message size is set to 4096 bytes. You can change this value by defin
   }
 ```
 
-=== Processing options
+###Processing options
 
 By default Duramen uses daemon threads, but it can be easily changes by declaring:
 
