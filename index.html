@@ -38,7 +38,7 @@
 
 <ol>
 <li>Add duramen dependency:
-eu.codearte.duramen:duramen:0.6.2</li>
+eu.codearte.duramen:duramen:0.7.0</li>
 <li>
 <p>Use <code>@EnableDuramen</code> annotation to import Duramen into your project:</p>
 
@@ -102,7 +102,109 @@ eu.codearte.duramen:duramen:0.6.2</li>
 <span class="o">}</span>
 </pre></div>
 </li>
-</ol>
+</ol><p>== Testing:</p>
+
+<p>Usually in test scope we don't want to persist our events. To achieve such behaviour we can configure custom bean:</p>
+
+<div class="highlight highlight-java"><pre> <span class="kn">import</span> <span class="nn">eu.codearte.duramen.datastore.InMemory</span><span class="o">();</span>
+
+ <span class="nd">@Bean</span>
+ <span class="kd">public</span> <span class="n">Datastore</span> <span class="nf">inMemoryDatastore</span><span class="o">()</span> <span class="o">{</span>
+     <span class="k">return</span> <span class="k">new</span> <span class="nf">InMemory</span><span class="o">();</span>
+ <span class="o">}</span>
+</pre></div>
+
+<p>== Error handling:</p>
+
+<p>When <code>EventHandler</code> processing bean throws an exception, it will be logged with event data serialized to JSON.</p>
+
+<p>== Available datastores</p>
+
+<p>In Duramen there are 3 <code>Datastore</code> objects.</p>
+
+<p>=== FileData</p>
+
+<p>Default implementation. Backed by <a href="https://github.com/OpenHFT/HugeCollections">HugeCollections</a> SharedHashMap. It stores events in binary file (by default duramen.data).
+To use this implementation you don't have to do anything, as long as you accept default values (max 1000 concurrent entries each 4096 bytes).
+To change defaults you need create own bean:</p>
+
+<div class="highlight highlight-java"><pre> <span class="kn">import</span> <span class="nn">eu.codearte.duramen.datastore.FileData</span><span class="o">;</span>
+
+ <span class="nd">@Bean</span>
+ <span class="kd">public</span> <span class="n">Datastore</span> <span class="nf">fileDatastore</span><span class="o">()</span> <span class="o">{</span>
+   <span class="k">return</span> <span class="k">new</span> <span class="nf">FileData</span><span class="o">(</span><span class="s">"/tmp/myfile.data"</span><span class="o">);</span>
+ <span class="o">}</span>
+
+ <span class="c1">// or</span>
+
+  <span class="nd">@Bean</span>
+  <span class="kd">public</span> <span class="n">Datastore</span> <span class="nf">fileDatastore</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nf">FileData</span><span class="o">(</span><span class="s">"/tmp/myfile.data"</span><span class="o">,</span> <span class="cm">/*entries*/</span> <span class="mi">10</span><span class="o">,</span> <span class="cm">/*entrySize*/</span><span class="o">,</span> <span class="mi">8192</span><span class="o">);</span>
+  <span class="o">}</span>
+</pre></div>
+
+<p>=== Embedded H2</p>
+
+<p>You can also use embedded H2 database.</p>
+
+<div class="highlight highlight-java"><pre> <span class="kn">import</span> <span class="nn">eu.codearte.duramen.datastore.EmbeddedH2</span><span class="o">;</span>
+
+ <span class="nd">@Bean</span>
+ <span class="kd">public</span> <span class="n">Datastore</span> <span class="nf">embeddedH2Datastore</span><span class="o">()</span> <span class="o">{</span>
+   <span class="k">return</span> <span class="nf">EmbeddedH2</span><span class="o">();</span>
+ <span class="o">}</span>
+
+ <span class="c1">// or</span>
+
+  <span class="nd">@Bean</span>
+  <span class="kd">public</span> <span class="n">Datastore</span> <span class="nf">embeddedH2Datastore</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="nf">EmbeddedH2</span><span class="o">(</span><span class="s">"jdbc:h2:file:/tmp/duramen.data"</span><span class="o">);</span>
+  <span class="o">}</span>
+</pre></div>
+
+<p>=== In memory</p>
+
+<p>We've already described <code>InMemory</code> datastore in "Testing" section</p>
+
+<p>== Customizing default configuration:</p>
+
+<p>As you can see to use Duramen no configuration is required. However if you want, there are some options to customize.</p>
+
+<p>=== Specifying message size:</p>
+
+<p>By default message size is set to 4096 bytes. You can change this value by defining bean:</p>
+
+<div class="highlight highlight-java"><pre>    <span class="nd">@Bean</span>
+  <span class="kd">public</span> <span class="n">Integer</span> <span class="nf">maxMessageSize</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="mi">8192</span><span class="o">;</span>
+  <span class="o">}</span>
+</pre></div>
+
+<p>=== Processing options</p>
+
+<p>By default Duramen uses daemon threads, but it can be easily changes by declaring:</p>
+
+<div class="highlight highlight-java"><pre>    <span class="nd">@Bean</span>
+    <span class="kd">public</span> <span class="n">Boolean</span> <span class="nf">useDaemonThreads</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+    <span class="o">}</span>
+</pre></div>
+
+<p>Also number of threads processing events (default we use only one thread) can be increased:</p>
+
+<div class="highlight highlight-java"><pre>    <span class="nd">@Bean</span>
+    <span class="kd">public</span> <span class="n">Integer</span> <span class="nf">maxProcessingThreads</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="mi">2</span><span class="o">;</span>
+    <span class="o">}</span>
+</pre></div>
+
+<p>Finally, if you want, there is a possibility to use own ExecutorService for processing events.</p>
+
+<div class="highlight highlight-java"><pre>    <span class="nd">@Bean</span>
+    <span class="kd">public</span> <span class="n">ExecutorService</span> <span class="nf">duramenExecutorService</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">Executors</span><span class="o">.</span><span class="na">newCachedThreadPool</span><span class="o">();</span>
+    <span class="o">}</span>
+</pre></div>
         </section>
 
         <aside id="sidebar">
