@@ -1,8 +1,11 @@
 package eu.codearte.duramen.config;
 
 import eu.codearte.duramen.DuramenPackageMarker;
+import eu.codearte.duramen.event.EventJsonSerializer;
 import eu.codearte.duramen.datastore.Datastore;
 import eu.codearte.duramen.datastore.FileData;
+import eu.codearte.duramen.handler.ExceptionHandler;
+import eu.codearte.duramen.handler.LoggingExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -42,6 +45,12 @@ public class DuramenConfiguration {
 	@Qualifier("duramenExecutorService")
 	private ExecutorService executorService;
 
+	@Autowired(required = false)
+	private ExceptionHandler exceptionHandler;
+
+	@Autowired
+	private EventJsonSerializer eventJsonSerializer;
+
 	@Bean
 	public EvenBusContext evenBusProperties() throws IOException {
 		if (executorService == null) {
@@ -50,7 +59,10 @@ public class DuramenConfiguration {
 		if (datastore == null) {
 			datastore = new FileData();
 		}
-		return new EvenBusContext(maxMessageSize, executorService, datastore);
+		if (exceptionHandler == null) {
+			exceptionHandler = new LoggingExceptionHandler(eventJsonSerializer);
+		}
+		return new EvenBusContext(maxMessageSize, executorService, datastore, eventJsonSerializer, exceptionHandler);
 	}
 
 	protected ThreadFactory buildThreadFactory() {

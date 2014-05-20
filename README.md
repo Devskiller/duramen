@@ -1,12 +1,12 @@
 Duramen
 =======
 
-Persistent event bus implementation for Java. Easily integrates with Spring Framework. By default uses file backed embedded H2 database. Guarantees that event will be dispatched.
+Persistent event bus implementation for Java. Easily integrates with Spring Framework. By default uses file backed database. Guarantees that event will be dispatched.
 
 ##Usage:
 
 1. Add duramen dependency:
-  eu.codearte.duramen:duramen:0.7.0
+  eu.codearte.duramen:duramen:0.8.0
 2. Use ```@EnableDuramen``` annotation to import Duramen into your project:
  ```java
  @Configuration
@@ -79,6 +79,8 @@ Usually in test scope we don't want to persist our events. To achieve such behav
 
 When ```EventHandler``` processing bean throws an exception, it will be logged with event data serialized to JSON.
 
+You can specify custom ```ExceptionHandler``` by creating bean implementing ```eu.codearte.duramen.handler.ExceptionHandler``` interface.
+
 ##Available datastores
 
 In Duramen there are 3 ```Datastore``` objects.
@@ -124,6 +126,11 @@ You can also use embedded H2 database.
     return EmbeddedH2("jdbc:h2:file:/tmp/duramen.data");
   }
 ```
+
+###Relational DB
+
+If you want to use your own relational database as a ```Datastore``` it is of course possible. 
+You just need to create class extending ```eu.codearte.duramen.datastore.RelationalDB```
 
 ###In memory
 

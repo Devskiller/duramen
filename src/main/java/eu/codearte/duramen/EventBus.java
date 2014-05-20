@@ -4,8 +4,6 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.FastOutput;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import eu.codearte.duramen.config.EvenBusContext;
@@ -34,14 +32,12 @@ public class EventBus {
 
 	private final Multimap<String, EventHandler> handlers;
 	private final Kryo kryo;
-	private final ObjectMapper objectMapper;
 
 	@Autowired
 	public EventBus(EvenBusContext evenBusContext) {
 		this.evenBusContext = evenBusContext;
 		handlers = HashMultimap.create();
 		kryo = new Kryo();
-		objectMapper = new ObjectMapper();
 	}
 
 	public void register(String eventDiscriminator, EventHandler eventHandler) {
@@ -56,7 +52,8 @@ public class EventBus {
 		final Long eventId = evenBusContext.getDatastore().saveEvent(output.toBytes());
 
 		if (LOG.isDebugEnabled()) {
-			LOG.debug("Publishing event [id = {}, body={}]", eventId, serializeToJson(event));
+			LOG.debug("Publishing event [id = {}, body={}]",
+					eventId, evenBusContext.getEventJsonSerializer().serializeToJson(event));
 		}
 
 		evenBusContext.getExecutorService().submit(new Runnable() {
@@ -78,21 +75,10 @@ public class EventBus {
 			try {
 				handler.onEvent(event);
 			} catch (Throwable e) {
-				LOG.error("Error during processing event [{}]", serializeToJson(event), e);
+				evenBusContext.getExceptionHandler().handleException(event, e);
 			}
 		}
 		evenBusContext.getDatastore().deleteEvent(eventId);
-	}
-
-	private String serializeToJson(Event event) {
-		String json;
-		try {
-			json = objectMapper.writeValueAsString(event);
-		} catch (JsonProcessingException jsonException) {
-			LOG.error("Error during serializing event to json", jsonException);
-			json = "ERROR";
-		}
-		return json;
 	}
 
 	@SuppressWarnings("unchecked")

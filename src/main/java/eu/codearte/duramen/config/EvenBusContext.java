@@ -1,5 +1,7 @@
 package eu.codearte.duramen.config;
 
+import eu.codearte.duramen.event.EventJsonSerializer;
+import eu.codearte.duramen.handler.ExceptionHandler;
 import eu.codearte.duramen.datastore.Datastore;
 
 import java.util.concurrent.ExecutorService;
@@ -12,11 +14,16 @@ public class EvenBusContext {
 	private final Integer maxMessageSize;
 	private final ExecutorService executorService;
 	private final Datastore datastore;
+	private final EventJsonSerializer eventJsonSerializer;
+	private final ExceptionHandler exceptionHandler;
 
-	public EvenBusContext(Integer maxMessageSize, ExecutorService executorService, Datastore datastore) {
+	public EvenBusContext(Integer maxMessageSize, ExecutorService executorService,
+												Datastore datastore, EventJsonSerializer eventJsonSerializer, ExceptionHandler exceptionHandler) {
 		this.maxMessageSize = maxMessageSize;
 		this.executorService = executorService;
 		this.datastore = datastore;
+		this.eventJsonSerializer = eventJsonSerializer;
+		this.exceptionHandler = exceptionHandler;
 	}
 
 	public Integer getMaxMessageSize() {
@@ -30,4 +37,13 @@ public class EvenBusContext {
 	public Datastore getDatastore() {
 		return datastore;
 	}
+
+	public EventJsonSerializer getEventJsonSerializer() {
+		return eventJsonSerializer;
+	}
+
+	public ExceptionHandler getExceptionHandler() {
+		return exceptionHandler;
+	}
+
 }

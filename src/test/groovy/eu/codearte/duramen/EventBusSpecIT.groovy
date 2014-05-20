@@ -1,5 +1,9 @@
-package eu.codearte.duramen.test
+package eu.codearte.duramen
 
+import eu.codearte.duramen.test.EventConsumer
+import eu.codearte.duramen.test.EventProducer
+import eu.codearte.duramen.test.SampleConfiguration
+import eu.codearte.duramen.test.TestEvent
 import org.kubek2k.springockito.annotations.SpringockitoAnnotatedContextLoader
 import org.kubek2k.springockito.annotations.WrapWithSpy
 import org.springframework.beans.factory.annotation.Autowired
