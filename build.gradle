@@ -12,14 +12,22 @@ buildscript {
 	repositories {
 		mavenCentral()
 		mavenLocal()
+		maven {
+			url 'http://dl.bintray.com/content/gvsmirnov/gradle-plugins'
+		}
 	}
 	dependencies {
 		classpath 'org.hibernate.build.gradle:gradle-upload-auth-plugin:1.1.1'
+		classpath 'com.github.jengelman.gradle.plugins:shadow:0.8.1'
 	}
 }
 
 repositories {
 	mavenCentral()
+}
+
+sourceSets {
+	perf
 }
 
 ext {
@@ -43,6 +51,42 @@ dependencies {
 	testCompile "org.mockito:mockito-all:1.9.5"
 	testCompile "ch.qos.logback:logback-classic:1.1.1"
 	testCompile "org.slf4j:jcl-over-slf4j:${slf4jVersion}"
+
+	perfCompile project
+
+	perfCompile 'org.openjdk.jmh:jmh-core:0.7.2'
+	perfCompile 'org.openjdk.jmh:jmh-generator-annprocess:0.7.2'
+}
+
+task perfJar(type: Jar, dependsOn: perfClasses) {
+	from sourceSets.perf.output + sourceSets.main.output
+}
+
+task benchmarks(dependsOn: perfJar) {
+
+	apply plugin: "shadow"
+
+	shadow {
+		classifier = "benchmarks"
+		includeDependenciesFor = ["runtime", "perfRuntime"]
+
+		transformer(com.github.jengelman.gradle.plugins.shadow.transformers.ManifestResourceTransformer) {
+			mainClass = "org.openjdk.jmh.Main"
+		}
+	}
+
+	doLast {
+		shadowJar.execute()
+	}
+
+}
+
+apply plugin: "idea"
+idea {
+	module {
+		scopes.PROVIDED.plus  += configurations.perfCompile
+		scopes.PROVIDED.minus += configurations.compile
+	}
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {

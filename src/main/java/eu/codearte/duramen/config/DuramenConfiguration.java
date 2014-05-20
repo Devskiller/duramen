@@ -2,14 +2,14 @@ package eu.codearte.duramen.config;
 
 import eu.codearte.duramen.DuramenPackageMarker;
 import eu.codearte.duramen.datastore.Datastore;
-import eu.codearte.duramen.datastore.EmbeddedH2;
+import eu.codearte.duramen.datastore.FileData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -42,17 +42,13 @@ public class DuramenConfiguration {
 	@Qualifier("duramenExecutorService")
 	private ExecutorService executorService;
 
-	@Autowired
-	private AutowireCapableBeanFactory autowireCapableBeanFactory;
-
 	@Bean
-	public EvenBusContext evenBusProperties() {
+	public EvenBusContext evenBusProperties() throws IOException {
 		if (executorService == null) {
 			executorService = Executors.newFixedThreadPool(maxProcessingThreads, buildThreadFactory());
 		}
 		if (datastore == null) {
-			datastore = new EmbeddedH2("jdbc:h2:file:/tmp/duramen.data");
-			autowireCapableBeanFactory.initializeBean(datastore, "duramenDatastoreBean");
+			datastore = new FileData();
 		}
 		return new EvenBusContext(maxMessageSize, executorService, datastore);
 	}

@@ -69,6 +69,7 @@ public class EventBus {
 
 	@SuppressWarnings("unchecked")
 	private void processEvent(Long eventId, Event event) {
+		checkNotNull(event);
 		Collection<EventHandler> eventHandlers = handlers.get(event.getClass().getCanonicalName());
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Processing event id = {} - found {} valid handlers", eventId, eventHandlers.size());
