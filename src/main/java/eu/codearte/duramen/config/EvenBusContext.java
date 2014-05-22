@@ -1,13 +1,15 @@
 package eu.codearte.duramen.config;
 
-import eu.codearte.duramen.event.EventJsonSerializer;
+import eu.codearte.duramen.internal.EventJsonSerializer;
 import eu.codearte.duramen.handler.ExceptionHandler;
 import eu.codearte.duramen.datastore.Datastore;
 
 import java.util.concurrent.ExecutorService;
 
 /**
- * Created by Jakub Kubrynski / 2014-03-26
+ * Class grouping all dependencies needed to processing events.
+ *
+ * @author Jakub Kubrynski
  */
 public class EvenBusContext {
 

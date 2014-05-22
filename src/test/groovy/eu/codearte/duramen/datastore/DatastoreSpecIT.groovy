@@ -15,7 +15,7 @@ class DatastoreSpecIT extends Specification {
 	private static final String FILENAME = "duramen.test"
 
 	@Unroll
-	def "should persist event in InMemory datastore"() {
+	def "should persist event in datastore"() {
 		given:
 			def eventBytes = "Test".getBytes()
 		when:

@@ -1,7 +1,8 @@
-package eu.codearte.duramen.event;
+package eu.codearte.duramen.internal;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import eu.codearte.duramen.event.Event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Component;
 import java.lang.invoke.MethodHandles;
 
 /**
- * Created by jkubrynski@gmail.com / 2014-05-20
+ * @author Jakub Kubrynski
  */
 @Component
 public class EventJsonSerializer {

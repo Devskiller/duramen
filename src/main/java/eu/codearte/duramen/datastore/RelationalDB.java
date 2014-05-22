@@ -20,7 +20,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Jakub Kubrynski / 2014-03-25
+ * Abstract class for relational databases.
+ * Can be easily extended to support demanded database.
+ *
+ * @author Jakub Kubrynski
  */
 public abstract class RelationalDB implements Datastore, ResourceLoaderAware {
 
@@ -47,17 +50,21 @@ public abstract class RelationalDB implements Datastore, ResourceLoaderAware {
 		jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 
+	/**
+	 * Override this method to create demanded data source object
+	 * @return data source instance
+	 */
 	protected abstract AbstractDataSource getDataSource();
 
 	@Override
-	public Long saveEvent(final byte[] bytes) {
+	public Long saveEvent(final byte[] eventAsBytes) {
 		GeneratedKeyHolder generatedKeyHolder = new GeneratedKeyHolder();
 		jdbcTemplate.update(new PreparedStatementCreator() {
 			@Override
 			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
 				PreparedStatement preparedStatement =
 						dataSource.getConnection().prepareStatement("insert into EVENTS(event) values (?)");
-				preparedStatement.setBytes(1, bytes);
+				preparedStatement.setBytes(1, eventAsBytes);
 				return preparedStatement;
 			}
 		}, generatedKeyHolder);

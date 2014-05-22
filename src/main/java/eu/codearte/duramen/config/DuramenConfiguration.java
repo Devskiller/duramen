@@ -1,11 +1,11 @@
 package eu.codearte.duramen.config;
 
 import eu.codearte.duramen.DuramenPackageMarker;
-import eu.codearte.duramen.event.EventJsonSerializer;
+import eu.codearte.duramen.internal.EventJsonSerializer;
 import eu.codearte.duramen.datastore.Datastore;
 import eu.codearte.duramen.datastore.FileData;
 import eu.codearte.duramen.handler.ExceptionHandler;
-import eu.codearte.duramen.handler.LoggingExceptionHandler;
+import eu.codearte.duramen.internal.LoggingExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -19,7 +19,10 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Created by jkubrynski@gmail.com / 2014-02-10
+ * Main configuration class. Handles all optional dependencies which allows
+ * user to override default settings
+ *
+ * @author Jakub Kubrynski
  */
 @SuppressWarnings("FieldCanBeLocal")
 @Configuration
@@ -65,7 +68,7 @@ public class DuramenConfiguration {
 		return new EvenBusContext(maxMessageSize, executorService, datastore, eventJsonSerializer, exceptionHandler);
 	}
 
-	protected ThreadFactory buildThreadFactory() {
+	private ThreadFactory buildThreadFactory() {
 		final AtomicInteger threadNumerator = new AtomicInteger(0);
 
 		return new ThreadFactory() {

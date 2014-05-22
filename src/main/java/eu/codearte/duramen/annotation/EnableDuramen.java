@@ -9,7 +9,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Created by jkubrynski@gmail.com / 2014-02-10
+ * Root Duramen configuration annotation
+ * Annotate your @Configuration class to enable Duramen in your project
+ *
+ * @author Jakub Kubrynski
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

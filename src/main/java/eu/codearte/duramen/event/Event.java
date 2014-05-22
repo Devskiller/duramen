@@ -3,8 +3,10 @@ package eu.codearte.duramen.event;
 import java.io.Serializable;
 
 /**
- * Created by jkubrynski@gmail.com / 2014-02-10
+ * Generic event interface
+ *
+ * @author Jakub Kubrynski
  */
-public class Event implements Serializable {
+public interface Event extends Serializable {
 
 }

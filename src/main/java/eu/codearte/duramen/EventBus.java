@@ -21,7 +21,8 @@ import java.util.Map;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Created by jkubrynski@gmail.com / 2014-02-10
+ * Main Duramen class implementing EventBus pattern
+ * @author Jakub Kubrynski
  */
 @Component
 public class EventBus {
@@ -40,10 +41,23 @@ public class EventBus {
 		kryo = new Kryo();
 	}
 
+	/**
+	 * This method can be used to register custom handler not included in Spring application context
+	 *
+	 * @param eventDiscriminator full qualified name of event class
+	 * @param eventHandler {@link eu.codearte.duramen.handler.EventHandler} instance
+	 */
 	public void register(String eventDiscriminator, EventHandler eventHandler) {
 		handlers.put(eventDiscriminator, eventHandler);
 	}
 
+	/**
+	 * Method used to publish event. Event will be persisted and then processed
+	 * in {@link java.util.concurrent.ExecutorService}
+	 * After successful processing event will be deleted from persistent store
+	 *
+	 * @param event event to process
+	 */
 	@SuppressWarnings("unchecked")
 	public void publish(final Event event) {
 		checkNotNull(event);
@@ -81,6 +95,9 @@ public class EventBus {
 		evenBusContext.getDatastore().deleteEvent(eventId);
 	}
 
+	/**
+	 * This method process all event persisted and not processed before application restart.
+	 */
 	@SuppressWarnings("unchecked")
 	public void processSavedEvents() {
 		Map<Long, byte[]> events = evenBusContext.getDatastore().getStoredEvents();

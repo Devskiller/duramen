@@ -5,7 +5,7 @@ import eu.codearte.duramen.event.Event;
 /**
  * Created by jkubrynski@gmail.com / 2014-02-10
  */
-public class TestEvent extends Event {
+public class TestEvent implements Event {
 
 	private String test;
 

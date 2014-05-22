@@ -1,6 +1,7 @@
 package eu.codearte.duramen.datastore;
 
 import com.google.common.base.Strings;
+import eu.codearte.duramen.generator.IdGenerator;
 import eu.codearte.duramen.generator.RandomIdGenerator;
 import net.openhft.collections.SharedHashMapBuilder;
 
@@ -14,7 +15,9 @@ import java.util.Map;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * Created by jkubrynski@gmail.com / 2014-05-19
+ * Fast implementation based on SharedHashMap from HugeCollections
+ *
+ * @author Jakub Kubrynski
  */
 public class FileData implements Datastore {
 
@@ -22,34 +25,53 @@ public class FileData implements Datastore {
 	public static final String DEFAULT_FILENAME = "duramen.data";
 	public static final int DEFAULT_ENTRIES = 1000;
 
-	private final RandomIdGenerator randomIdGenerator = new RandomIdGenerator();
+	private final IdGenerator randomIdGenerator = new RandomIdGenerator();
 
 	private final Map<Long, byte[]> sharedHashMap;
 
+	/**
+	 * Creates persistent store localized in duramen.data file
+	 * in application working dir
+	 *
+	 * @throws IOException when creating/opening file fails
+	 */
 	@SuppressWarnings("UnusedDeclaration")
 	public FileData() throws IOException {
 		this(DEFAULT_FILENAME);
 	}
 
-	public FileData(String filename) throws IOException {
-		this(filename, DEFAULT_ENTRIES, DEFAULT_ENTRY_SIZE);
+	/**
+	 * Creates persistent store in specified path
+	 * @param path full path including file name
+	 * @throws IOException when creating/opening file fails
+	 */
+	public FileData(String path) throws IOException {
+		this(path, DEFAULT_ENTRIES, DEFAULT_ENTRY_SIZE);
 	}
 
-	public FileData(String filename, int entries, int entrySize) throws IOException {
-		checkArgument(!Strings.isNullOrEmpty(filename));
+	/**
+	 * Most detailed constructor allowing creation of fully customized map
+	 *
+	 * @param path full path including file name
+	 * @param entries maximum number of events persisted
+	 * @param entrySize maximum size of single event
+	 * @throws IOException when creating/opening file fails
+	 */
+	public FileData(String path, int entries, int entrySize) throws IOException {
+		checkArgument(!Strings.isNullOrEmpty(path));
 		checkArgument(entries > 0);
 		checkArgument(entrySize > 0);
 
 		sharedHashMap = new SharedHashMapBuilder()
 				.entries(entries)
 				.entrySize(entrySize)
-				.create(new File(filename), Long.class, byte[].class);
+				.create(new File(path), Long.class, byte[].class);
 	}
 
 	@Override
-	public Long saveEvent(byte[] bytes) {
+	public Long saveEvent(byte[] eventAsBytes) {
 		long id = randomIdGenerator.getNextId();
-		sharedHashMap.put(id, bytes);
+		sharedHashMap.put(id, eventAsBytes);
 		return id;
 	}
 
@@ -63,6 +85,11 @@ public class FileData implements Datastore {
 		return new HashMap<>(sharedHashMap);
 	}
 
+	/**
+	 * Closes map before destroying application context
+	 *
+	 * @throws IOException inherited from {@link java.io.Closeable}. Will not be thrown
+	 */
 	@PreDestroy
 	public void close() throws IOException {
 		((Closeable) sharedHashMap).close();

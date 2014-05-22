@@ -17,10 +17,14 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * Created by jkubrynski@gmail.com / 2014-02-10
+ * This class scans application context and lookup for all beans implementing
+ * {@link eu.codearte.duramen.handler.EventHandler} interface. Those beans will
+ * be registered as event handlers automatically.
+ *
+ * @author Jakub Kubrynski
  */
 @Component
-public class DuramenConfigurator implements ApplicationListener<ContextRefreshedEvent> {
+class DuramenConfigurator implements ApplicationListener<ContextRefreshedEvent> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 

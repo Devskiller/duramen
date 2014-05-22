@@ -1,14 +1,14 @@
-package eu.codearte.duramen.handler;
+package eu.codearte.duramen.internal;
 
-import eu.codearte.duramen.event.EventJsonSerializer;
 import eu.codearte.duramen.event.Event;
+import eu.codearte.duramen.handler.ExceptionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.invoke.MethodHandles;
 
 /**
- * Created by jkubrynski@gmail.com / 2014-05-20
+ * @author Jakub Kubrynski
  */
 public class LoggingExceptionHandler implements ExceptionHandler {
 
