@@ -7,5 +7,5 @@ import eu.codearte.duramen.event.Event;
  */
 public interface ExceptionHandler {
 
-	void handleException(Event event, Throwable e);
+	void handleException(Event event, Throwable e, EventHandler handler);
 }

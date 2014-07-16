@@ -7,6 +7,13 @@ import eu.codearte.duramen.event.Event;
  */
 public class TestEvent implements Event {
 
+	private TestEvent() {
+	}
+
+	public TestEvent(String test) {
+		this.test = test;
+	}
+
 	private String test;
 
 	public String getTest() {

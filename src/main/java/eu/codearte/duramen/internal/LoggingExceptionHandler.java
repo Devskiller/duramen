@@ -1,6 +1,7 @@
 package eu.codearte.duramen.internal;
 
 import eu.codearte.duramen.event.Event;
+import eu.codearte.duramen.handler.EventHandler;
 import eu.codearte.duramen.handler.ExceptionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +22,8 @@ public class LoggingExceptionHandler implements ExceptionHandler {
 	}
 
 	@Override
-	public void handleException(Event event, Throwable e) {
-		LOG.error("Error during processing event [{}]", eventJsonSerializer.serializeToJson(event), e);
+	public void handleException(Event event, Throwable e, EventHandler handler) {
+		LOG.error("Error during processing event [{}] in handler {}",
+				eventJsonSerializer.serializeToJson(event), handler.getClass().getSimpleName(), e);
 	}
 }

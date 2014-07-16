@@ -1,10 +1,10 @@
 package eu.codearte.duramen.config;
 
 import eu.codearte.duramen.DuramenPackageMarker;
-import eu.codearte.duramen.internal.EventJsonSerializer;
 import eu.codearte.duramen.datastore.Datastore;
 import eu.codearte.duramen.datastore.FileData;
 import eu.codearte.duramen.handler.ExceptionHandler;
+import eu.codearte.duramen.internal.EventJsonSerializer;
 import eu.codearte.duramen.internal.LoggingExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -26,12 +26,16 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @SuppressWarnings("FieldCanBeLocal")
 @Configuration
-@ComponentScan(basePackageClasses = DuramenPackageMarker.class)
+@ComponentScan(basePackageClasses = DuramenPackageMarker.class, excludeFilters = @ComponentScan.Filter(Configuration.class))
 public class DuramenConfiguration {
 
 	@Autowired(required = false)
 	@Qualifier("maxMessageSize")
 	private Integer maxMessageSize = 4096;
+
+	@Autowired(required = false)
+	@Qualifier("maxMessageCount")
+	private Integer maxMessageCount = 1024;
 
 	@Autowired(required = false)
 	@Qualifier("maxProcessingThreads")
@@ -60,7 +64,7 @@ public class DuramenConfiguration {
 			executorService = Executors.newFixedThreadPool(maxProcessingThreads, buildThreadFactory());
 		}
 		if (datastore == null) {
-			datastore = new FileData();
+			datastore = new FileData(FileData.DEFAULT_FILENAME, maxMessageCount, maxMessageSize);
 		}
 		if (exceptionHandler == null) {
 			exceptionHandler = new LoggingExceptionHandler(eventJsonSerializer);

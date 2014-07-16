@@ -1,6 +1,5 @@
 package eu.codearte.duramen.datastore
 
-import eu.codearte.duramen.annotation.EnableDuramen
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -26,7 +25,7 @@ class DatastoreSpecIT extends Specification {
 			eventsMap.containsKey(eventId)
 			eventsMap.get(eventId) == eventBytes
 		where:
-			datastore << [new InMemory(), new FileData(FILENAME), getEmbeddedH2()]
+			datastore << [new InMemory(), new FileData(FILENAME, 1024, 4096), getEmbeddedH2()]
 	}
 
 	def cleanupSpec() {
@@ -38,8 +37,7 @@ class DatastoreSpecIT extends Specification {
 	}
 
 	@Configuration
-	@EnableDuramen
-	static class H2Config {
+	private static class H2Config {
 
 		@Bean
 		EmbeddedH2 embeddedH2() {

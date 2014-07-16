@@ -1,8 +1,8 @@
 package eu.codearte.duramen.config;
 
-import eu.codearte.duramen.internal.EventJsonSerializer;
-import eu.codearte.duramen.handler.ExceptionHandler;
 import eu.codearte.duramen.datastore.Datastore;
+import eu.codearte.duramen.handler.ExceptionHandler;
+import eu.codearte.duramen.internal.EventJsonSerializer;
 
 import java.util.concurrent.ExecutorService;
 

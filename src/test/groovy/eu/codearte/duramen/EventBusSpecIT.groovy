@@ -1,12 +1,17 @@
 package eu.codearte.duramen
 
+import eu.codearte.duramen.annotation.EnableDuramen
+import eu.codearte.duramen.datastore.Datastore
+import eu.codearte.duramen.datastore.InMemory
 import eu.codearte.duramen.test.EventConsumer
 import eu.codearte.duramen.test.EventProducer
-import eu.codearte.duramen.test.SampleConfiguration
 import eu.codearte.duramen.test.TestEvent
 import org.kubek2k.springockito.annotations.SpringockitoAnnotatedContextLoader
 import org.kubek2k.springockito.annotations.WrapWithSpy
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.ComponentScan
+import org.springframework.context.annotation.Configuration
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
 
@@ -32,5 +37,17 @@ class EventBusSpecIT extends Specification {
 			eventProducer.produce()
 		then:
 			verify(eventConsumer, timeout(500)).onEvent(isA(TestEvent))
+	}
+
+	@Configuration
+	@ComponentScan(basePackages = "eu.codearte.duramen.test")
+	@EnableDuramen
+	static class SampleConfiguration {
+
+		@Bean
+		Datastore datastore() {
+			new InMemory();
+		}
+
 	}
 }

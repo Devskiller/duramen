@@ -18,7 +18,7 @@ public class SharedHashMapBenchmark {
 
 	@Setup
 	public void init() throws IOException {
-		fileData = new FileData();
+		fileData = new FileData(FileData.DEFAULT_FILENAME, 1024, 4096);
 	}
 
 	@GenerateMicroBenchmark

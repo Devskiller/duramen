@@ -21,33 +21,11 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public class FileData implements Datastore {
 
-	public static final int DEFAULT_ENTRY_SIZE = 4096;
-	public static final String DEFAULT_FILENAME = "duramen.data";
-	public static final int DEFAULT_ENTRIES = 1000;
+	public static final String DEFAULT_FILENAME = "/tmp/duramen.data";
 
 	private final IdGenerator randomIdGenerator = new RandomIdGenerator();
 
 	private final Map<Long, byte[]> sharedHashMap;
-
-	/**
-	 * Creates persistent store localized in duramen.data file
-	 * in application working dir
-	 *
-	 * @throws IOException when creating/opening file fails
-	 */
-	@SuppressWarnings("UnusedDeclaration")
-	public FileData() throws IOException {
-		this(DEFAULT_FILENAME);
-	}
-
-	/**
-	 * Creates persistent store in specified path
-	 * @param path full path including file name
-	 * @throws IOException when creating/opening file fails
-	 */
-	public FileData(String path) throws IOException {
-		this(path, DEFAULT_ENTRIES, DEFAULT_ENTRY_SIZE);
-	}
 
 	/**
 	 * Most detailed constructor allowing creation of fully customized map

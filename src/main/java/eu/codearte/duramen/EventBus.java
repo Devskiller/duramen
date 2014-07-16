@@ -22,6 +22,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Main Duramen class implementing EventBus pattern
+ *
  * @author Jakub Kubrynski
  */
 @Component
@@ -45,10 +46,30 @@ public class EventBus {
 	 * This method can be used to register custom handler not included in Spring application context
 	 *
 	 * @param eventDiscriminator full qualified name of event class
-	 * @param eventHandler {@link eu.codearte.duramen.handler.EventHandler} instance
+	 * @param eventHandler       {@link eu.codearte.duramen.handler.EventHandler} instance
 	 */
 	public void register(String eventDiscriminator, EventHandler eventHandler) {
-		handlers.put(eventDiscriminator, eventHandler);
+		if (checkEventClassCorrectness(eventDiscriminator)) {
+			handlers.put(eventDiscriminator, eventHandler);
+		}
+	}
+
+	/**
+	 * Checks if class contains default constructor required by Kryo deserializer
+	 *
+	 * @param eventDiscriminator full qualified name of event class
+	 * @return true if class is correct event class
+	 */
+	private boolean checkEventClassCorrectness(String eventDiscriminator) {
+		try {
+			Class.forName(eventDiscriminator).getDeclaredConstructor();
+			return true;
+		} catch (NoSuchMethodException e) {
+			LOG.error("Event {} does not contain default (even private) constructor!", eventDiscriminator);
+		} catch (ClassNotFoundException e) {
+			LOG.error("Could not retrieve event class {}", eventDiscriminator);
+		}
+		return false;
 	}
 
 	/**
@@ -89,7 +110,7 @@ public class EventBus {
 			try {
 				handler.onEvent(event);
 			} catch (Throwable e) {
-				evenBusContext.getExceptionHandler().handleException(event, e);
+				evenBusContext.getExceptionHandler().handleException(event, e, handler);
 			}
 		}
 		evenBusContext.getDatastore().deleteEvent(eventId);
