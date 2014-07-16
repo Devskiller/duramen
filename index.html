@@ -51,7 +51,7 @@
 
 <p>3) Implement custom event class:</p>
 
-<div class="highlight highlight-java"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">FooEvent</span> <span class="kd">extends</span> <span class="n">Event</span> <span class="o">{</span>
+<div class="highlight highlight-java"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">FooEvent</span> <span class="kd">implements</span> <span class="n">Event</span> <span class="o">{</span>
     <span class="kd">private</span> <span class="n">String</span> <span class="n">message</span><span class="o">;</span>
 
     <span class="c1">// getters and setters</span>
@@ -74,7 +74,7 @@
 
     <span class="cm">/** </span>
 <span class="cm">     * This method will be called from your production code</span>
-<span class="cm">    */</span>
+<span class="cm">     */</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">produce</span><span class="o">()</span> <span class="o">{</span>
         <span class="n">FooEvent</span> <span class="n">event</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">FooEvent</span><span class="o">();</span>
         <span class="n">event</span><span class="o">.</span><span class="na">setMessage</span><span class="o">(</span><span class="s">"Test message"</span><span class="o">);</span>
@@ -215,7 +215,7 @@ You just need to create class extending <code>eu.codearte.duramen.datastore.Rela
 <p>Finally, if you want, there is a possibility to use own ExecutorService for processing events.</p>
 
 <div class="highlight highlight-java"><pre><span class="nd">@Bean</span>
-    <span class="kd">public</span> <span class="n">ExecutorService</span> <span class="nf">duramenExecutorService</span><span class="o">()</span> <span class="o">{</span>
+<span class="kd">public</span> <span class="n">ExecutorService</span> <span class="nf">duramenExecutorService</span><span class="o">()</span> <span class="o">{</span>
     <span class="k">return</span> <span class="n">Executors</span><span class="o">.</span><span class="na">newCachedThreadPool</span><span class="o">();</span>
 <span class="o">}</span>
 </pre></div>
