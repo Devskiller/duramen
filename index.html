@@ -38,68 +38,68 @@
 
 <ol>
 <li>Add duramen dependency:
-eu.codearte.duramen:duramen:0.8.0</li>
+eu.codearte.duramen:duramen:0.9.0</li>
 <li>
 <p>Use <code>@EnableDuramen</code> annotation to import Duramen into your project:</p>
 
-<div class="highlight highlight-java"><pre><span class="nd">@Configuration</span>
-<span class="nd">@ComponentScan</span>
-<span class="nd">@EnableDuramen</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">FooConfiguration</span> <span class="o">{</span>
+<div class="highlight highlight-java"><pre>  <span class="nd">@Configuration</span>
+  <span class="nd">@ComponentScan</span>
+  <span class="nd">@EnableDuramen</span>
+  <span class="kd">public</span> <span class="kd">class</span> <span class="nc">FooConfiguration</span> <span class="o">{</span>
 
-<span class="o">}</span>
+  <span class="o">}</span>
 </pre></div>
 </li>
 <li>
 <p>Implement custom event class:</p>
 
-<div class="highlight highlight-java"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">FooEvent</span> <span class="kd">extends</span> <span class="n">Event</span> <span class="o">{</span>
-  <span class="kd">private</span> <span class="n">String</span> <span class="n">message</span><span class="o">;</span>
+<div class="highlight highlight-java"><pre>  <span class="kd">public</span> <span class="kd">class</span> <span class="nc">FooEvent</span> <span class="kd">extends</span> <span class="n">Event</span> <span class="o">{</span>
+      <span class="kd">private</span> <span class="n">String</span> <span class="n">message</span><span class="o">;</span>
 
-  <span class="c1">// getters and setters</span>
-<span class="o">}</span>
+      <span class="c1">// getters and setters</span>
+  <span class="o">}</span>
 </pre></div>
 </li>
 <li>
 <p>To produce events you have to implement producer component:</p>
 
-<div class="highlight highlight-java"><pre><span class="kn">import</span> <span class="nn">eu.codearte.duramen.EventBus</span><span class="o">;</span>
+<div class="highlight highlight-java"><pre>  <span class="kn">import</span> <span class="nn">eu.codearte.duramen.EventBus</span><span class="o">;</span>
 
-<span class="nd">@Component</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">FooEventProducer</span> <span class="o">{</span>
+  <span class="nd">@Component</span>
+  <span class="kd">public</span> <span class="kd">class</span> <span class="nc">FooEventProducer</span> <span class="o">{</span>
 
-  <span class="kd">private</span> <span class="kd">final</span> <span class="n">EventBus</span> <span class="n">eventBus</span><span class="o">;</span>
+      <span class="kd">private</span> <span class="kd">final</span> <span class="n">EventBus</span> <span class="n">eventBus</span><span class="o">;</span>
 
-  <span class="nd">@Autowired</span>
-  <span class="kd">public</span> <span class="nf">FooEventProducer</span><span class="o">(</span><span class="n">EventBus</span> <span class="n">eventBus</span><span class="o">)</span> <span class="o">{</span>
-      <span class="k">this</span><span class="o">.</span><span class="na">eventBus</span> <span class="o">=</span> <span class="n">eventBus</span><span class="o">;</span>
+      <span class="nd">@Autowired</span>
+      <span class="kd">public</span> <span class="nf">FooEventProducer</span><span class="o">(</span><span class="n">EventBus</span> <span class="n">eventBus</span><span class="o">)</span> <span class="o">{</span>
+          <span class="k">this</span><span class="o">.</span><span class="na">eventBus</span> <span class="o">=</span> <span class="n">eventBus</span><span class="o">;</span>
+      <span class="o">}</span>
+
+      <span class="cm">/** </span>
+<span class="cm">       * This method will be called from your production code</span>
+<span class="cm">      */</span>
+      <span class="kd">public</span> <span class="kt">void</span> <span class="nf">produce</span><span class="o">()</span> <span class="o">{</span>
+          <span class="n">FooEvent</span> <span class="n">event</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">FooEvent</span><span class="o">();</span>
+          <span class="n">event</span><span class="o">.</span><span class="na">setMessage</span><span class="o">(</span><span class="s">"Test message"</span><span class="o">);</span>
+          <span class="n">eventBus</span><span class="o">.</span><span class="na">publish</span><span class="o">(</span><span class="n">event</span><span class="o">);</span>
+      <span class="o">}</span>
   <span class="o">}</span>
-
-  <span class="cm">/** </span>
-<span class="cm">   * This method will be called from your production code</span>
-<span class="cm">   */</span>
-  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">produce</span><span class="o">()</span> <span class="o">{</span>
-      <span class="n">FooEvent</span> <span class="n">event</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FooEvent</span><span class="o">();</span>
-      <span class="n">event</span><span class="o">.</span><span class="na">setMessage</span><span class="o">(</span><span class="s">"Test message"</span><span class="o">);</span>
-      <span class="n">eventBus</span><span class="o">.</span><span class="na">publish</span><span class="o">(</span><span class="n">event</span><span class="o">);</span>
-    <span class="o">}</span>
-<span class="o">}</span>
 </pre></div>
 </li>
 <li>
 <p>To receive events you have to implement consumer. Generic type in <code>EventHandler</code> will decide which events will be processed in particular consumer:</p>
 
-<div class="highlight highlight-java"><pre><span class="kn">import</span> <span class="nn">eu.codearte.duramen.handler.EventHandler</span><span class="o">;</span>
+<div class="highlight highlight-java"><pre>  <span class="kn">import</span> <span class="nn">eu.codearte.duramen.handler.EventHandler</span><span class="o">;</span>
 
-<span class="nd">@Component</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">FooEventConsumer</span> <span class="kd">implements</span> <span class="n">EventHandler</span><span class="o">&lt;</span><span class="n">FooEvent</span><span class="o">&gt;</span> <span class="o">{</span>
+  <span class="nd">@Component</span>
+  <span class="kd">public</span> <span class="kd">class</span> <span class="nc">FooEventConsumer</span> <span class="kd">implements</span> <span class="n">EventHandler</span><span class="o">&lt;</span><span class="n">FooEvent</span><span class="o">&gt;</span> <span class="o">{</span>
 
-   <span class="nd">@Override</span>
-   <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onEvent</span><span class="o">(</span><span class="n">FooEvent</span> <span class="n">event</span><span class="o">)</span> <span class="o">{</span>
-     <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Received message: "</span> <span class="o">+</span> <span class="n">event</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span>
-   <span class="o">}</span>
+      <span class="nd">@Override</span>
+      <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onEvent</span><span class="o">(</span><span class="n">FooEvent</span> <span class="n">event</span><span class="o">)</span> <span class="o">{</span>
+          <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Received message: "</span> <span class="o">+</span> <span class="n">event</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span>
+      <span class="o">}</span>
 
-<span class="o">}</span>
+  <span class="o">}</span>
 </pre></div>
 </li>
 </ol><h2>
@@ -107,12 +107,12 @@ eu.codearte.duramen:duramen:0.8.0</li>
 
 <p>Usually in test scope we don't want to persist our events. To achieve such behaviour we can configure custom bean:</p>
 
-<div class="highlight highlight-java"><pre> <span class="kn">import</span> <span class="nn">eu.codearte.duramen.datastore.InMemory</span><span class="o">();</span>
+<div class="highlight highlight-java"><pre>    <span class="kn">import</span> <span class="nn">eu.codearte.duramen.datastore.InMemory</span><span class="o">();</span>
 
- <span class="nd">@Bean</span>
- <span class="kd">public</span> <span class="n">Datastore</span> <span class="nf">inMemoryDatastore</span><span class="o">()</span> <span class="o">{</span>
-     <span class="k">return</span> <span class="k">new</span> <span class="nf">InMemory</span><span class="o">();</span>
- <span class="o">}</span>
+    <span class="nd">@Bean</span>
+    <span class="kd">public</span> <span class="n">Datastore</span> <span class="nf">inMemoryDatastore</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">InMemory</span><span class="o">();</span>
+    <span class="o">}</span>
 </pre></div>
 
 <h2>
@@ -131,22 +131,15 @@ eu.codearte.duramen:duramen:0.8.0</li>
 <a name="filedata" class="anchor" href="#filedata"><span class="octicon octicon-link"></span></a>FileData</h3>
 
 <p>Default implementation. Backed by <a href="https://github.com/OpenHFT/HugeCollections">HugeCollections</a> SharedHashMap. It stores events in binary file (by default duramen.data).
-To use this implementation you don't have to do anything, as long as you accept default values (max 1000 concurrent entries each 4096 bytes).
+To use this implementation you don't have to do anything, as long as you accept default values (see "Specifying messages limits").
 To change defaults you need create own bean:</p>
 
-<div class="highlight highlight-java"><pre> <span class="kn">import</span> <span class="nn">eu.codearte.duramen.datastore.FileData</span><span class="o">;</span>
+<div class="highlight highlight-java"><pre>    <span class="kn">import</span> <span class="nn">eu.codearte.duramen.datastore.FileData</span><span class="o">;</span>
 
- <span class="nd">@Bean</span>
- <span class="kd">public</span> <span class="n">Datastore</span> <span class="nf">fileDatastore</span><span class="o">()</span> <span class="o">{</span>
-   <span class="k">return</span> <span class="k">new</span> <span class="nf">FileData</span><span class="o">(</span><span class="s">"/tmp/myfile.data"</span><span class="o">);</span>
- <span class="o">}</span>
-
- <span class="c1">// or</span>
-
-  <span class="nd">@Bean</span>
-  <span class="kd">public</span> <span class="n">Datastore</span> <span class="nf">fileDatastore</span><span class="o">()</span> <span class="o">{</span>
-    <span class="k">return</span> <span class="k">new</span> <span class="nf">FileData</span><span class="o">(</span><span class="s">"/tmp/myfile.data"</span><span class="o">,</span> <span class="cm">/*entries*/</span> <span class="mi">10</span><span class="o">,</span> <span class="cm">/*entrySize*/</span><span class="o">,</span> <span class="mi">8192</span><span class="o">);</span>
-  <span class="o">}</span>
+    <span class="nd">@Bean</span>
+    <span class="kd">public</span> <span class="n">Datastore</span> <span class="nf">fileDatastore</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">FileData</span><span class="o">(</span><span class="s">"/tmp/myfile.data"</span><span class="o">,</span> <span class="cm">/*entries*/</span> <span class="mi">10</span><span class="o">,</span> <span class="cm">/*entrySize*/</span><span class="o">,</span> <span class="mi">8192</span><span class="o">);</span>
+    <span class="o">}</span>
 </pre></div>
 
 <h3>
@@ -154,19 +147,19 @@ To change defaults you need create own bean:</p>
 
 <p>You can also use embedded H2 database.</p>
 
-<div class="highlight highlight-java"><pre> <span class="kn">import</span> <span class="nn">eu.codearte.duramen.datastore.EmbeddedH2</span><span class="o">;</span>
+<div class="highlight highlight-java"><pre>    <span class="kn">import</span> <span class="nn">eu.codearte.duramen.datastore.EmbeddedH2</span><span class="o">;</span>
 
- <span class="nd">@Bean</span>
- <span class="kd">public</span> <span class="n">Datastore</span> <span class="nf">embeddedH2Datastore</span><span class="o">()</span> <span class="o">{</span>
-   <span class="k">return</span> <span class="nf">EmbeddedH2</span><span class="o">();</span>
- <span class="o">}</span>
+    <span class="nd">@Bean</span>
+    <span class="kd">public</span> <span class="n">Datastore</span> <span class="nf">embeddedH2Datastore</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="nf">EmbeddedH2</span><span class="o">();</span>
+    <span class="o">}</span>
 
  <span class="c1">// or</span>
 
-  <span class="nd">@Bean</span>
-  <span class="kd">public</span> <span class="n">Datastore</span> <span class="nf">embeddedH2Datastore</span><span class="o">()</span> <span class="o">{</span>
-    <span class="k">return</span> <span class="nf">EmbeddedH2</span><span class="o">(</span><span class="s">"jdbc:h2:file:/tmp/duramen.data"</span><span class="o">);</span>
-  <span class="o">}</span>
+    <span class="nd">@Bean</span>
+    <span class="kd">public</span> <span class="n">Datastore</span> <span class="nf">embeddedH2Datastore</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="nf">EmbeddedH2</span><span class="o">(</span><span class="s">"jdbc:h2:file:/tmp/duramen.data"</span><span class="o">);</span>
+    <span class="o">}</span>
 </pre></div>
 
 <h3>
@@ -186,14 +179,22 @@ You just need to create class extending <code>eu.codearte.duramen.datastore.Rela
 <p>As you can see to use Duramen no configuration is required. However if you want, there are some options to customize.</p>
 
 <h3>
-<a name="specifying-message-size" class="anchor" href="#specifying-message-size"><span class="octicon octicon-link"></span></a>Specifying message size:</h3>
+<a name="specifying-messages-limits" class="anchor" href="#specifying-messages-limits"><span class="octicon octicon-link"></span></a>Specifying messages limits:</h3>
 
 <p>By default message size is set to 4096 bytes. You can change this value by defining bean:</p>
 
 <div class="highlight highlight-java"><pre>    <span class="nd">@Bean</span>
-  <span class="kd">public</span> <span class="n">Integer</span> <span class="nf">maxMessageSize</span><span class="o">()</span> <span class="o">{</span>
-    <span class="k">return</span> <span class="mi">8192</span><span class="o">;</span>
-  <span class="o">}</span>
+    <span class="kd">public</span> <span class="n">Integer</span> <span class="nf">maxMessageSize</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="mi">8192</span><span class="o">;</span>
+    <span class="o">}</span>
+</pre></div>
+
+<p>Message count limit is set to 1024 events in queue. You can change this value by defining bean:</p>
+
+<div class="highlight highlight-java"><pre>    <span class="nd">@Bean</span>
+    <span class="kd">public</span> <span class="n">Integer</span> <span class="nf">maxMessageCount</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="mi">2048</span><span class="o">;</span>
+    <span class="o">}</span>
 </pre></div>
 
 <h3>
@@ -218,7 +219,7 @@ You just need to create class extending <code>eu.codearte.duramen.datastore.Rela
 <p>Finally, if you want, there is a possibility to use own ExecutorService for processing events.</p>
 
 <div class="highlight highlight-java"><pre>    <span class="nd">@Bean</span>
-    <span class="kd">public</span> <span class="n">ExecutorService</span> <span class="nf">duramenExecutorService</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kd">public</span> <span class="n">ExecutorService</span> <span class="nf">duramenExecutorService</span><span class="o">()</span> <span class="o">{</span>
         <span class="k">return</span> <span class="n">Executors</span><span class="o">.</span><span class="na">newCachedThreadPool</span><span class="o">();</span>
     <span class="o">}</span>
 </pre></div>
