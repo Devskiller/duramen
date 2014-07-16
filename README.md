@@ -18,7 +18,7 @@ public class FooConfiguration {
 }
 ```
 
-3) Implement custom event class:
+3) Implement custom event class. Remember that this class must contain (even private) default constructor
 ```java
 public class FooEvent implements Event {
 	private String message;
