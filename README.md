@@ -20,7 +20,7 @@ public class FooConfiguration {
 
 3) Implement custom event class:
 ```java
-public class FooEvent extends Event {
+public class FooEvent implements Event {
 	private String message;
  
 	// getters and setters
@@ -43,7 +43,7 @@ public class FooEventProducer {
 
 	/** 
 	 * This method will be called from your production code
-	*/
+	 */
 	public void produce() {
 		FooEvent event = new FooEvent();
 		event.setMessage("Test message");
@@ -180,7 +180,7 @@ public Integer maxProcessingThreads() {
 Finally, if you want, there is a possibility to use own ExecutorService for processing events.
 ```java
 @Bean
-	public ExecutorService duramenExecutorService() {
+public ExecutorService duramenExecutorService() {
 	return Executors.newCachedThreadPool();
 }
 ```
