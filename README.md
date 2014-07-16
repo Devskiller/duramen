@@ -6,7 +6,7 @@ Persistent event bus implementation for Java. Easily integrates with Spring Fram
 ##Usage:
 
 1. Add duramen dependency:
-  eu.codearte.duramen:duramen:0.8.0
+  eu.codearte.duramen:duramen:0.9.0
 2. Use ```@EnableDuramen``` annotation to import Duramen into your project:
  ```java
  @Configuration
@@ -88,18 +88,11 @@ In Duramen there are 3 ```Datastore``` objects.
 ###FileData
 
 Default implementation. Backed by [HugeCollections](https://github.com/OpenHFT/HugeCollections) SharedHashMap. It stores events in binary file (by default duramen.data).
-To use this implementation you don't have to do anything, as long as you accept default values (max 1000 concurrent entries each 4096 bytes).
+To use this implementation you don't have to do anything, as long as you accept default values (see "Specifying messages limits").
 To change defaults you need create own bean:
 
 ```java
  import eu.codearte.duramen.datastore.FileData;
- 
- @Bean
- public Datastore fileDatastore() {
-   return new FileData("/tmp/myfile.data");
- }
- 
- // or
  
   @Bean
   public Datastore fileDatastore() {
@@ -140,7 +133,7 @@ We've already described ```InMemory``` datastore in "Testing" section
 
 As you can see to use Duramen no configuration is required. However if you want, there are some options to customize.
 
-###Specifying message size:
+###Specifying messages limits:
 
 By default message size is set to 4096 bytes. You can change this value by defining bean:
 
@@ -148,6 +141,15 @@ By default message size is set to 4096 bytes. You can change this value by defin
 	@Bean
   public Integer maxMessageSize() {
   	return 8192;
+  }
+```
+
+Message count limit is set to 1024 events in queue. You can change this value by defining bean:
+
+```java
+	@Bean
+  public Integer maxMessageCount() {
+  	return 2048;
   }
 ```
 
