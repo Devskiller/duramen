@@ -3,3 +3,5 @@ duramen.iml
 .gradle/
 build/
 out/
+classes
+duramen.data
