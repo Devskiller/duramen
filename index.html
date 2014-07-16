@@ -36,11 +36,11 @@
 <h2>
 <a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage:</h2>
 
-<ol>
-<li>Add duramen dependency:
-eu.codearte.duramen:duramen:0.9.0</li>
-<li>Use <code>@EnableDuramen</code> annotation to import Duramen into your project:</li>
-</ol><div class="highlight highlight-java"><pre><span class="nd">@Configuration</span>
+<p>1) Add duramen dependency:
+  eu.codearte.duramen:duramen:0.9.0
+2) Use <code>@EnableDuramen</code> annotation to import Duramen into your project:</p>
+
+<div class="highlight highlight-java"><pre><span class="nd">@Configuration</span>
 <span class="nd">@ComponentScan</span>
 <span class="nd">@EnableDuramen</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">FooConfiguration</span> <span class="o">{</span>
@@ -48,18 +48,18 @@ eu.codearte.duramen:duramen:0.9.0</li>
 <span class="o">}</span>
 </pre></div>
 
-<ol>
-<li>Implement custom event class:</li>
-</ol><div class="highlight highlight-java"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">FooEvent</span> <span class="kd">extends</span> <span class="n">Event</span> <span class="o">{</span>
+<p>3) Implement custom event class:</p>
+
+<div class="highlight highlight-java"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">FooEvent</span> <span class="kd">extends</span> <span class="n">Event</span> <span class="o">{</span>
     <span class="kd">private</span> <span class="n">String</span> <span class="n">message</span><span class="o">;</span>
 
     <span class="c1">// getters and setters</span>
 <span class="o">}</span>
 </pre></div>
 
-<ol>
-<li>To produce events you have to implement producer component:</li>
-</ol><div class="highlight highlight-java"><pre><span class="kn">import</span> <span class="nn">eu.codearte.duramen.EventBus</span><span class="o">;</span>
+<p>4) To produce events you have to implement producer component:</p>
+
+<div class="highlight highlight-java"><pre><span class="kn">import</span> <span class="nn">eu.codearte.duramen.EventBus</span><span class="o">;</span>
 
 <span class="nd">@Component</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">FooEventProducer</span> <span class="o">{</span>
@@ -82,9 +82,9 @@ eu.codearte.duramen:duramen:0.9.0</li>
 <span class="o">}</span>
 </pre></div>
 
-<ol>
-<li>To receive events you have to implement consumer. Generic type in <code>EventHandler</code> will decide which events will be processed in particular consumer:</li>
-</ol><div class="highlight highlight-java"><pre><span class="kn">import</span> <span class="nn">eu.codearte.duramen.handler.EventHandler</span><span class="o">;</span>
+<p>5) To receive events you have to implement consumer. Generic type in <code>EventHandler</code> will decide which events will be processed in particular consumer:</p>
+
+<div class="highlight highlight-java"><pre><span class="kn">import</span> <span class="nn">eu.codearte.duramen.handler.EventHandler</span><span class="o">;</span>
 
 <span class="nd">@Component</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">FooEventConsumer</span> <span class="kd">implements</span> <span class="n">EventHandler</span><span class="o">&lt;</span><span class="n">FooEvent</span><span class="o">&gt;</span> <span class="o">{</span>
