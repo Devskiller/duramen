@@ -8,7 +8,7 @@ Persistent event bus implementation for Java. Easily integrates with Spring Fram
 1. Add duramen dependency:
   eu.codearte.duramen:duramen:0.9.0
 2. Use ```@EnableDuramen``` annotation to import Duramen into your project:
- ```java
+```java
 @Configuration
 @ComponentScan
 @EnableDuramen
@@ -16,16 +16,18 @@ public class FooConfiguration {
  
 }
 ```
+
 3. Implement custom event class:
- ```java
+```java
 public class FooEvent extends Event {
 	private String message;
  
 	// getters and setters
 }
 ```
+
 4. To produce events you have to implement producer component:
- ```java
+```java
 import eu.codearte.duramen.EventBus;
  
 @Component
@@ -48,8 +50,9 @@ public class FooEventProducer {
 	}
 }
 ```
+
 5. To receive events you have to implement consumer. Generic type in ```EventHandler``` will decide which events will be processed in particular consumer:
- ```java
+```java
 import eu.codearte.duramen.handler.EventHandler;
 
 @Component
