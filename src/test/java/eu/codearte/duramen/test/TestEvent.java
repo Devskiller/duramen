@@ -7,14 +7,15 @@ import eu.codearte.duramen.event.Event;
  */
 public class TestEvent implements Event {
 
+	private String test;
+
 	private TestEvent() {
+		// just for persistence
 	}
 
 	public TestEvent(String test) {
 		this.test = test;
 	}
-
-	private String test;
 
 	public String getTest() {
 		return test;

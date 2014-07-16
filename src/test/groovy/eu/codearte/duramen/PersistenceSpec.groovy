@@ -24,7 +24,7 @@ class PersistenceSpec extends Specification {
 	static AtomicBoolean wrongHandlerInvoked = new AtomicBoolean(false)
 	static AtomicBoolean goodHandlerInvoked = new AtomicBoolean(false)
 
-	def '"shouldProcessEventAfterCrash"'() {
+	def '"should process event after crash"'() {
 		given:
 			def context = new AnnotationConfigApplicationContext(SampleConfigurationWrongConsumer)
 			def eventProducer = context.getBean(EventProducer)
