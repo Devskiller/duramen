@@ -8,71 +8,71 @@ Persistent event bus implementation for Java. Easily integrates with Spring Fram
 1. Add duramen dependency:
   eu.codearte.duramen:duramen:0.9.0
 2. Use ```@EnableDuramen``` annotation to import Duramen into your project:
- ```java
-	@Configuration
-	@ComponentScan
-	@EnableDuramen
-	public class FooConfiguration {
+```java
+@Configuration
+@ComponentScan
+@EnableDuramen
+public class FooConfiguration {
  
-	}
+}
 ```
 3. Implement custom event class:
- ```java
-	public class FooEvent extends Event {
-		private String message;
+```java
+public class FooEvent extends Event {
+	private String message;
  
-		// getters and setters
-	}
+	// getters and setters
+}
 ```
 4. To produce events you have to implement producer component:
- ```java
-	import eu.codearte.duramen.EventBus;
+```java
+import eu.codearte.duramen.EventBus;
  
-	@Component
-	public class FooEventProducer {
- 
-		private final EventBus eventBus;
-   
-		@Autowired
-		public FooEventProducer(EventBus eventBus) {
-			this.eventBus = eventBus;
-		}
+@Component
+public class FooEventProducer {
 
-		/** 
-		 * This method will be called from your production code
-		*/
-		public void produce() {
-			FooEvent event = new FooEvent();
-			event.setMessage("Test message");
-			eventBus.publish(event);
- 		}
+	private final EventBus eventBus;
+  
+	@Autowired
+	public FooEventProducer(EventBus eventBus) {
+		this.eventBus = eventBus;
 	}
+
+	/** 
+	 * This method will be called from your production code
+	*/
+	public void produce() {
+		FooEvent event = new FooEvent();
+		event.setMessage("Test message");
+		eventBus.publish(event);
+	}
+}
 ```
 5. To receive events you have to implement consumer. Generic type in ```EventHandler``` will decide which events will be processed in particular consumer:
- ```java
-	import eu.codearte.duramen.handler.EventHandler;
+```java
+import eu.codearte.duramen.handler.EventHandler;
 
-	@Component
-	public class FooEventConsumer implements EventHandler<FooEvent> {
+@Component
+public class FooEventConsumer implements EventHandler<FooEvent> {
 
-		@Override
-		public void onEvent(FooEvent event) {
-			System.out.println("Received message: " + event.getMessage());
-		}
-
+	@Override
+	public void onEvent(FooEvent event) {
+		System.out.println("Received message: " + event.getMessage());
 	}
+
+}
 ```
 
 ##Testing:
 
 Usually in test scope we don't want to persist our events. To achieve such behaviour we can configure custom bean:
 ```java
-	import eu.codearte.duramen.datastore.InMemory();
+import eu.codearte.duramen.datastore.InMemory();
  
-	@Bean
-	public Datastore inMemoryDatastore() {
-		return new InMemory();
-	}
+@Bean
+public Datastore inMemoryDatastore() {
+	return new InMemory();
+}
 ```
 
 ##Error handling:
@@ -92,12 +92,12 @@ To use this implementation you don't have to do anything, as long as you accept 
 To change defaults you need create own bean:
 
 ```java
-	import eu.codearte.duramen.datastore.FileData;
+import eu.codearte.duramen.datastore.FileData;
  
-	@Bean
-	public Datastore fileDatastore() {
-		return new FileData("/tmp/myfile.data", /*entries*/ 10, /*entrySize*/, 8192);
-	}
+@Bean
+public Datastore fileDatastore() {
+	return new FileData("/tmp/myfile.data", /*entries*/ 10, /*entrySize*/, 8192);
+}
 ```
 
 ###Embedded H2
@@ -105,19 +105,19 @@ To change defaults you need create own bean:
 You can also use embedded H2 database.
 
 ```java
-	import eu.codearte.duramen.datastore.EmbeddedH2;
- 
-	@Bean
-	public Datastore embeddedH2Datastore() {
-		return EmbeddedH2();
-	}
- 
- // or
+import eu.codearte.duramen.datastore.EmbeddedH2;
 
-	@Bean
-	public Datastore embeddedH2Datastore() {
-		return EmbeddedH2("jdbc:h2:file:/tmp/duramen.data");
-	}
+@Bean
+public Datastore embeddedH2Datastore() {
+	return EmbeddedH2();
+}
+ 
+// or
+
+@Bean
+public Datastore embeddedH2Datastore() {
+	return EmbeddedH2("jdbc:h2:file:/tmp/duramen.data");
+}
 ```
 
 ###Relational DB
@@ -138,19 +138,19 @@ As you can see to use Duramen no configuration is required. However if you want,
 By default message size is set to 4096 bytes. You can change this value by defining bean:
 
 ```java
-	@Bean
-	public Integer maxMessageSize() {
-		return 8192;
-	}
+@Bean
+public Integer maxMessageSize() {
+	return 8192;
+}
 ```
 
 Message count limit is set to 1024 events in queue. You can change this value by defining bean:
 
 ```java
-	@Bean
-	public Integer maxMessageCount() {
-		return 2048;
-	}
+@Bean
+public Integer maxMessageCount() {
+	return 2048;
+}
 ```
 
 ###Processing options
@@ -158,25 +158,25 @@ Message count limit is set to 1024 events in queue. You can change this value by
 By default Duramen uses daemon threads, but it can be easily changes by declaring:
 
 ```java
-	@Bean
-	public Boolean useDaemonThreads() {
-		return false;
-	}
+@Bean
+public Boolean useDaemonThreads() {
+	return false;
+}
 ```
 
 Also number of threads processing events (default we use only one thread) can be increased:
 
 ```java
-	@Bean
-	public Integer maxProcessingThreads() {
-		return 2;
-	}
+@Bean
+public Integer maxProcessingThreads() {
+	return 2;
+}
 ```
 
 Finally, if you want, there is a possibility to use own ExecutorService for processing events.
 ```java
-	@Bean
-		public ExecutorService duramenExecutorService() {
-		return Executors.newCachedThreadPool();
-	}
+@Bean
+	public ExecutorService duramenExecutorService() {
+	return Executors.newCachedThreadPool();
+}
 ```
