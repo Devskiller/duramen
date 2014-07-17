@@ -1,0 +1,33 @@
+//Release related configuration for Gradle based project - a project specific part - Duramen
+
+ext.vendor = "Codearte"
+
+ext.mavenPomClosure = {
+	name 'Duramen'
+	description 'Duramen - Java persistent event bus'
+	packaging 'jar'
+	url 'http://codearte.github.io/duramen'
+	licenses {
+		license {
+			name 'The Apache Software License, Version 2.0'
+			url 'http://www.apache.org/licenses/LICENSE-2.0'
+			distribution 'repo'
+		}
+	}
+	developers {
+		developer {
+			id 'jkubrynski'
+			name 'Jakub Kubryński'
+			email 'jkubrynski ATT gmail DOTT com'
+			roles {
+				role 'despot'
+				role 'developer'
+			}
+		}
+	}
+	scm {
+		connection 'scm:git:git@github.com:Codearte/duramen.git'
+		developerConnection 'scm:git:git@github.com:Codearte/duramen.git'
+		url 'https://github.com/Codearte/duramen'
+	}
+}
