@@ -57,8 +57,8 @@ dependencies {
 }
 
 jmh {
-	warmupIterations = 1
-	iterations = 2
+	warmupIterations = 10
+	iterations = 20
 	fork = 1
 	forceGC = true
 }
