@@ -4,6 +4,9 @@ apply plugin: 'maven'
 apply plugin: 'uploadAuth'
 apply plugin: 'me.champeau.gradle.jmh'
 
+apply from: 'gradle/release-duramen.gradle'
+apply from: 'gradle/release.gradle'
+
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
@@ -60,8 +63,6 @@ jmh {
 	fork = 1
 	forceGC = true
 }
-
-apply from: 'gradle/release.gradle'
 
 task wrapper(type: Wrapper) {
 	gradleVersion = '1.12'
