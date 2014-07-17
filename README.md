@@ -42,9 +42,9 @@ public class FooEventProducer {
 	}
 
 	/** 
-	 * This method will be called from your production code
+	 * You will invoke this method somewhere in your code
 	 */
-	public void produce() {
+	public void produceEvent() {
 		FooEvent event = new FooEvent();
 		event.setMessage("Test message");
 		eventBus.publish(event);
@@ -189,7 +189,7 @@ public ExecutorService duramenExecutorService() {
 
 ##Performance
 
-Performance tests executed using JMH on Linux (3.15.4, Intel(R) Core(TM) i7-4600U CPU @ 2.10GHz)
+Performance tests executed using JMH on Linux-3.15.4, Intel(R) Core(TM) i7-4600U CPU @ 2.10GHz
 
 | Datastore | Event type* | Events / second |
 | --------- |-------------| ---------------:|
