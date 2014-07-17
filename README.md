@@ -67,6 +67,8 @@ public class FooEventConsumer implements EventHandler<FooEvent> {
 }
 ```
 
+All Spring beans implementing ```EventHandler``` interface will be automatically registered as handlers. It's also possible to manually register ```EventHandler``` by invoking ```eventBus.register(qualifiedEventClassName, eventHandler)``` method.
+
 ##Testing
 
 Usually in test scope we don't want to persist our events. To achieve such behaviour we can configure custom bean:
@@ -193,8 +195,8 @@ Performance tests executed using JMH on Linux (3.15.4, Intel(R) Core(TM) i7-4600
 | --------- |-------------| ---------------:|
 | Filedata  | Simple      |         232 000 |
 | Filedata  | Complex     |         203 000 |
-| InMemory  | Simple      |         307 000 |
-| InMemory  | Complex     |         175 000 |
+| InMemory  | Simple      |       1 036 559 |
+| InMemory  | Complex     |         291 000 |
 | H2        | Simple      |           4 200 |
 | H2        | Complex     |             150 |
 

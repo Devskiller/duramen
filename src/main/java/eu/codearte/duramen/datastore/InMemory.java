@@ -2,11 +2,10 @@ package eu.codearte.duramen.datastore;
 
 import eu.codearte.duramen.generator.IdGenerator;
 import eu.codearte.duramen.generator.RandomIdGenerator;
-import net.openhft.collections.HugeConfig;
-import net.openhft.collections.HugeHashMap;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Implementation mainly for testing purposes. Does not persist events
@@ -16,11 +15,11 @@ import java.util.Map;
 public class InMemory implements Datastore {
 
 	private final IdGenerator randomIdGenerator = new RandomIdGenerator();
-	private HugeHashMap<Long, byte[]> hashMap;
+	private Map<Long, byte[]> hashMap;
 
 	@SuppressWarnings("UnusedDeclaration")
 	public InMemory() {
-		hashMap = new HugeHashMap<>(HugeConfig.SMALL, Long.class, byte[].class);
+		hashMap = new ConcurrentHashMap<>();
 	}
 
 	@Override
