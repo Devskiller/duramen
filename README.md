@@ -3,7 +3,7 @@ Duramen
 
 Persistent event bus implementation for Java. Easily integrates with Spring Framework. By default uses file backed database. Guarantees that event will be dispatched.
 
-##Usage:
+##Usage
 
 1) Add duramen dependency:
   eu.codearte.duramen:duramen:0.9.0
@@ -67,7 +67,7 @@ public class FooEventConsumer implements EventHandler<FooEvent> {
 }
 ```
 
-##Testing:
+##Testing
 
 Usually in test scope we don't want to persist our events. To achieve such behaviour we can configure custom bean:
 ```java
@@ -79,7 +79,7 @@ public Datastore inMemoryDatastore() {
 }
 ```
 
-##Error handling:
+##Error handling
 
 When ```EventHandler``` processing bean throws an exception, it will be logged with event data serialized to JSON.
 
@@ -133,11 +133,11 @@ You just need to create class extending ```eu.codearte.duramen.datastore.Relatio
 
 We've already described ```InMemory``` datastore in "Testing" section
 
-##Customizing default configuration:
+##Customizing default configuration
 
 As you can see to use Duramen no configuration is required. However if you want, there are some options to customize.
 
-###Specifying messages limits:
+###Specifying messages limits
 
 By default message size is set to 4096 bytes. You can change this value by defining bean:
 
@@ -184,3 +184,19 @@ public ExecutorService duramenExecutorService() {
 	return Executors.newCachedThreadPool();
 }
 ```
+
+##Performance
+
+Performance tests executed using JMH on Linux (3.15.4, Intel(R) Core(TM) i7-4600U CPU @ 2.10GHz)
+
+| Datastore | Event type* | Events / second |
+| --------- |-------------| ---------------:|
+| Filedata  | Simple      |         232 000 |
+| Filedata  | Complex     |         203 000 |
+| InMemory  | Simple      |         307 000 |
+| InMemory  | Complex     |         175 000 |
+| H2        | Simple      |           4 200 |
+| H2        | Complex     |             150 |
+
+- Simple event contains one short String field
+- Complex event contains 512 chars String field, one BigDecimal field and 6 element ArrayList of Integers
