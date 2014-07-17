@@ -7,8 +7,6 @@ apply plugin: 'me.champeau.gradle.jmh'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
-ext.isReleaseVersion = !project.version.endsWith("SNAPSHOT")
-
 buildscript {
 	repositories {
 		mavenCentral()
@@ -51,8 +49,8 @@ dependencies {
 	testCompile "org.slf4j:jcl-over-slf4j:${slf4jVersion}"
 	testCompile "com.jayway.awaitility:awaitility-groovy:1.6.1"
 
-	compile 'org.openjdk.jmh:jmh-core:0.9'
-	compile 'org.openjdk.jmh:jmh-generator-annprocess:0.9'
+	compile 'org.openjdk.jmh:jmh-core:0.9.3'
+	compile 'org.openjdk.jmh:jmh-generator-annprocess:0.9.3'
 	jmh project.configurations.compile
 }
 
@@ -63,105 +61,7 @@ jmh {
 	forceGC = true
 }
 
-task javadocJar(type: Jar, dependsOn: javadoc) {
-	classifier = 'javadoc'
-	from javadoc.destinationDir
-}
-task sourceJar(type: Jar) {
-	classifier = 'sources'
-	from sourceSets.main.allSource
-}
-artifacts {
-	archives jar
-	archives sourceJar
-	archives javadocJar
-}
-
-jar {
-	manifest {
-		attributes(
-				"Application-Name": "Duramen",
-				"Implementation-Title": "Duramen",
-				"Implementation-Version": version,
-				"Implementation-Vendor": 'Codearte',
-				'Built-Date': new Date(),
-				'Built-JDK': System.properties['java.version'],
-				'Built-Gradle': gradle.gradleVersion,
-				"Built-By": System.properties['user.name'])
-	}
-}
-
-if (isReleaseVersion) {
-	//activate signing only for release versions (it is not needed for 'gradle install')
-	apply plugin: 'signing'
-
-	signing {
-		sign configurations.archives
-	}
-
-	gradle.taskGraph.whenReady { taskGraph ->
-		if (taskGraph.allTasks.any { it instanceof org.gradle.plugins.signing.Sign }) {
-			if (!project.hasProperty("signing.keyId") || !project.hasProperty("signing.secretKeyRingFile")) {
-				throw new GradleException("signing.keyId and signing.secretKeyRingFile has to be configured (e.g. in ~/.gradle/gradle.properties)")
-			}
-			Console console = System.console()
-			if (console && !project.hasProperty("signing.password")) {
-				def keyPassword = console.readPassword("\nEnter a private key password: ")
-				ext."signing.password" = keyPassword
-			} else if (!project.hasProperty("signing.password")) {
-				throw new GradleException("No signing.password configured (e.g. in ~/.gradle/gradle.properties). Also unable to get console. Make sure to not running a signing task in a daemon mode (e.g. use --no-daemon).")
-			}
-		}
-	}
-}
-
-uploadArchives {
-	repositories {
-		mavenDeployer {
-			repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-				authentication(userName: sonatypeUsername, password: sonatypePassword)
-			}
-			name = 'Sonatype OSS'
-
-			beforeDeployment {
-				if (isReleaseVersion) {
-					signing.signPom it
-				}
-			}
-
-			pom.project {
-				name 'Duramen'
-				description 'Duramen - Java persistent event bus'
-				packaging 'jar'
-				url 'http://codearte.github.io/duramen'
-				licenses {
-					license {
-						name 'The Apache Software License, Version 2.0'
-						url 'http://www.apache.org/licenses/LICENSE-2.0'
-						distribution 'repo'
-					}
-				}
-				developers {
-					developer {
-						id 'jkubrynski'
-						name 'Jakub Kubryński'
-						email 'jkubrynski ATT gmail DOTT com'
-						roles {
-							role 'despot'
-							role 'developer'
-						}
-					}
-				}
-				scm {
-					connection 'scm:git:git@github.com:Codearte/duramen.git'
-					developerConnection 'scm:git:git@github.com:Codearte/duramen.git'
-					url 'https://github.com/Codearte/duramen'
-				}
-
-			}
-		}
-	}
-}
+apply from: 'gradle/release.gradle'
 
 task wrapper(type: Wrapper) {
 	gradleVersion = '1.12'
