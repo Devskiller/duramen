@@ -30,8 +30,8 @@ public class FileData implements Datastore {
 	/**
 	 * Most detailed constructor allowing creation of fully customized map
 	 *
-	 * @param path full path including file name
-	 * @param entries maximum number of events persisted
+	 * @param path      full path including file name
+	 * @param entries   maximum number of events persisted
 	 * @param entrySize maximum size of single event
 	 * @throws IOException when creating/opening file fails
 	 */

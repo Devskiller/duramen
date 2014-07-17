@@ -14,14 +14,16 @@ import java.util.concurrent.ExecutorService;
 public class EvenBusContext {
 
 	private final Integer maxMessageSize;
+	private final Integer maxMessageCount;
 	private final ExecutorService executorService;
 	private final Datastore datastore;
 	private final EventJsonSerializer eventJsonSerializer;
 	private final ExceptionHandler exceptionHandler;
 
-	public EvenBusContext(Integer maxMessageSize, ExecutorService executorService,
+	public EvenBusContext(Integer maxMessageSize, Integer maxMessageCount, ExecutorService executorService,
 												Datastore datastore, EventJsonSerializer eventJsonSerializer, ExceptionHandler exceptionHandler) {
 		this.maxMessageSize = maxMessageSize;
+		this.maxMessageCount = maxMessageCount;
 		this.executorService = executorService;
 		this.datastore = datastore;
 		this.eventJsonSerializer = eventJsonSerializer;
@@ -30,6 +32,10 @@ public class EvenBusContext {
 
 	public Integer getMaxMessageSize() {
 		return maxMessageSize;
+	}
+
+	public Integer getMaxMessageCount() {
+		return maxMessageCount;
 	}
 
 	public ExecutorService getExecutorService() {

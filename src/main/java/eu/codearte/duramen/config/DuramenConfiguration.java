@@ -69,7 +69,8 @@ public class DuramenConfiguration {
 		if (exceptionHandler == null) {
 			exceptionHandler = new LoggingExceptionHandler(eventJsonSerializer);
 		}
-		return new EvenBusContext(maxMessageSize, executorService, datastore, eventJsonSerializer, exceptionHandler);
+		return new EvenBusContext(maxMessageSize, maxMessageCount,
+				executorService, datastore, eventJsonSerializer, exceptionHandler);
 	}
 
 	private ThreadFactory buildThreadFactory() {

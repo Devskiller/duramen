@@ -14,7 +14,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public class EmbeddedH2 extends RelationalDB {
 
-	private static final String DEFAULT_URL = "jdbc:h2:file:duramen.data";
+	private static final String DEFAULT_URL = "jdbc:h2:file:~/duramen.data";
 
 	private String url;
 

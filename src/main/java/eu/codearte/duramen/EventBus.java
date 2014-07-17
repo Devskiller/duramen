@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import java.lang.invoke.MethodHandles;
 import java.util.Collection;
 import java.util.Map;
+import java.util.concurrent.Semaphore;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -34,10 +35,12 @@ public class EventBus {
 
 	private final Multimap<String, EventHandler> handlers;
 	private final Kryo kryo;
+	private final Semaphore semaphore;
 
 	@Autowired
 	public EventBus(EvenBusContext evenBusContext) {
 		this.evenBusContext = evenBusContext;
+		semaphore = new Semaphore(evenBusContext.getMaxMessageCount(), true);
 		handlers = HashMultimap.create();
 		kryo = new Kryo();
 	}
@@ -82,10 +85,10 @@ public class EventBus {
 	@SuppressWarnings("unchecked")
 	public void publish(final Event event) {
 		checkNotNull(event);
+		semaphore.acquireUninterruptibly();
 		Output output = new FastOutput(evenBusContext.getMaxMessageSize());
 		kryo.writeClassAndObject(output, event);
 		final Long eventId = evenBusContext.getDatastore().saveEvent(output.toBytes());
-
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Publishing event [id = {}, body={}]",
 					eventId, evenBusContext.getEventJsonSerializer().serializeToJson(event));
@@ -114,6 +117,7 @@ public class EventBus {
 			}
 		}
 		evenBusContext.getDatastore().deleteEvent(eventId);
+		semaphore.release();
 	}
 
 	/**
@@ -123,6 +127,7 @@ public class EventBus {
 	public void processSavedEvents() {
 		Map<Long, byte[]> events = evenBusContext.getDatastore().getStoredEvents();
 		LOG.info("Processing stored events. Found {} events to process", events.size());
+		semaphore.acquireUninterruptibly(events.size());
 		for (Long eventId : events.keySet()) {
 			Input input = new Input(events.get(eventId));
 			processEvent(eventId, (Event) kryo.readClassAndObject(input));

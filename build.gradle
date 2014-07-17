@@ -2,6 +2,7 @@ apply plugin: 'java'
 apply plugin: 'groovy'
 apply plugin: 'maven'
 apply plugin: 'uploadAuth'
+apply plugin: 'me.champeau.gradle.jmh'
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
@@ -12,22 +13,16 @@ buildscript {
 	repositories {
 		mavenCentral()
 		mavenLocal()
-		maven {
-			url 'http://dl.bintray.com/content/gvsmirnov/gradle-plugins'
-		}
+		jcenter()
 	}
 	dependencies {
 		classpath 'org.hibernate.build.gradle:gradle-upload-auth-plugin:1.1.1'
-		classpath 'com.github.jengelman.gradle.plugins:shadow:0.8.1'
+		classpath 'me.champeau.gradle:jmh-gradle-plugin:0.1'
 	}
 }
 
 repositories {
 	mavenCentral()
-}
-
-sourceSets {
-	perf
 }
 
 ext {
@@ -56,41 +51,16 @@ dependencies {
 	testCompile "org.slf4j:jcl-over-slf4j:${slf4jVersion}"
 	testCompile "com.jayway.awaitility:awaitility-groovy:1.6.1"
 
-	perfCompile project
-
-	perfCompile 'org.openjdk.jmh:jmh-core:0.7.2'
-	perfCompile 'org.openjdk.jmh:jmh-generator-annprocess:0.7.2'
+	compile 'org.openjdk.jmh:jmh-core:0.9'
+	compile 'org.openjdk.jmh:jmh-generator-annprocess:0.9'
+	jmh project.configurations.compile
 }
 
-task perfJar(type: Jar, dependsOn: perfClasses) {
-	from sourceSets.perf.output + sourceSets.main.output
-}
-
-task benchmarks(dependsOn: perfJar) {
-
-	apply plugin: "shadow"
-
-	shadow {
-		classifier = "benchmarks"
-		includeDependenciesFor = ["runtime", "perfRuntime"]
-
-		transformer(com.github.jengelman.gradle.plugins.shadow.transformers.ManifestResourceTransformer) {
-			mainClass = "org.openjdk.jmh.Main"
-		}
-	}
-
-	doLast {
-		shadowJar.execute()
-	}
-
-}
-
-apply plugin: "idea"
-idea {
-	module {
-		scopes.PROVIDED.plus  += configurations.perfCompile
-		scopes.PROVIDED.minus += configurations.compile
-	}
+jmh {
+	warmupIterations = 1
+	iterations = 2
+	fork = 1
+	forceGC = true
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
@@ -194,5 +164,5 @@ uploadArchives {
 }
 
 task wrapper(type: Wrapper) {
-	gradleVersion = '2.0'
+	gradleVersion = '1.12'
 }
