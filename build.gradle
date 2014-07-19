@@ -32,6 +32,7 @@ ext {
 	slf4jVersion = "[1.6.0,)"
 	h2Version = "[1.2.120,)"
 	jacksonVersion = "[2.1.0,)"
+	jmhVersion = "0.9.3"
 }
 
 dependencies {
@@ -52,8 +53,8 @@ dependencies {
 	testCompile "org.slf4j:jcl-over-slf4j:${slf4jVersion}"
 	testCompile "com.jayway.awaitility:awaitility-groovy:1.6.1"
 
-	compile 'org.openjdk.jmh:jmh-core:0.9.3'
-	compile 'org.openjdk.jmh:jmh-generator-annprocess:0.9.3'
+	jmh "org.openjdk.jmh:jmh-core:${jmhVersion}"
+	jmh "org.openjdk.jmh:jmh-generator-annprocess:${jmhVersion}"
 	jmh project.configurations.compile
 }
 
