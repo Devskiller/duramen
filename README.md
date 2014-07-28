@@ -102,7 +102,7 @@ import eu.codearte.duramen.datastore.FileData;
  
 @Bean
 public Datastore fileDatastore() {
-	return new FileData("/tmp/myfile.data", /*entries*/ 10, /*entrySize*/, 8192);
+	return new FileData("/tmp/myfile.data", /*entries*/ 10, /*entrySize*/ 8192);
 }
 ```
 
