@@ -40,10 +40,11 @@ public class FileData implements Datastore {
 		checkArgument(entries > 0);
 		checkArgument(entrySize > 0);
 
-		sharedHashMap = new SharedHashMapBuilder()
+		sharedHashMap = SharedHashMapBuilder.of(Long.class, byte[].class)
 				.entries(entries)
 				.entrySize(entrySize)
-				.create(new File(path), Long.class, byte[].class);
+				.file(new File(path))
+				.create();
 	}
 
 	@Override

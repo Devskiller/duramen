@@ -1,14 +1,11 @@
 package eu.codearte.duramen;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.FastOutput;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import eu.codearte.duramen.config.EvenBusContext;
 import eu.codearte.duramen.event.Event;
 import eu.codearte.duramen.handler.EventHandler;
+import org.nustaq.serialization.simpleapi.DefaultCoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,15 +31,15 @@ public class EventBus {
 	private final EvenBusContext evenBusContext;
 
 	private final Multimap<String, EventHandler> handlers;
-	private final Kryo kryo;
 	private final Semaphore semaphore;
+
+	private DefaultCoder defaultCoder = new DefaultCoder();
 
 	@Autowired
 	public EventBus(EvenBusContext evenBusContext) {
 		this.evenBusContext = evenBusContext;
 		semaphore = new Semaphore(evenBusContext.getMaxMessageCount(), true);
 		handlers = HashMultimap.create();
-		kryo = new Kryo();
 	}
 
 	/**
@@ -86,9 +83,10 @@ public class EventBus {
 	public void publish(final Event event) {
 		checkNotNull(event);
 		semaphore.acquireUninterruptibly();
-		Output output = new FastOutput(evenBusContext.getMaxMessageSize());
-		kryo.writeClassAndObject(output, event);
-		final Long eventId = evenBusContext.getDatastore().saveEvent(output.toBytes());
+		final Long eventId;
+		synchronized (defaultCoder) {
+			eventId = evenBusContext.getDatastore().saveEvent(defaultCoder.toByteArray(event));
+		}
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Publishing event [id = {}, body={}]",
 					eventId, evenBusContext.getEventJsonSerializer().serializeToJson(event));
@@ -129,8 +127,11 @@ public class EventBus {
 		LOG.info("Processing stored events. Found {} events to process", events.size());
 		semaphore.acquireUninterruptibly(events.size());
 		for (Long eventId : events.keySet()) {
-			Input input = new Input(events.get(eventId));
-			processEvent(eventId, (Event) kryo.readClassAndObject(input));
+			Object eventToProcess;
+			synchronized (defaultCoder) {
+				eventToProcess = defaultCoder.toObject(events.get(eventId));
+			}
+			processEvent(eventId, (Event) eventToProcess);
 		}
 	}
 }
