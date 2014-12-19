@@ -4,7 +4,8 @@ import eu.codearte.duramen.datastore.Datastore;
 import eu.codearte.duramen.handler.ExceptionHandler;
 import eu.codearte.duramen.internal.EventJsonSerializer;
 
-import java.util.concurrent.ExecutorService;
+import java.util.Set;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * Class grouping all dependencies needed to processing events.
@@ -13,17 +14,16 @@ import java.util.concurrent.ExecutorService;
  */
 public class EvenBusContext {
 
-	private final Integer maxMessageSize;
-	private final Integer maxMessageCount;
-	private final ExecutorService executorService;
+	private final DuramenConfiguration duramenConfiguration;
+	private final ScheduledExecutorService executorService;
 	private final Datastore datastore;
 	private final EventJsonSerializer eventJsonSerializer;
 	private final ExceptionHandler exceptionHandler;
 
-	public EvenBusContext(Integer maxMessageSize, Integer maxMessageCount, ExecutorService executorService,
-												Datastore datastore, EventJsonSerializer eventJsonSerializer, ExceptionHandler exceptionHandler) {
-		this.maxMessageSize = maxMessageSize;
-		this.maxMessageCount = maxMessageCount;
+	public EvenBusContext(DuramenConfiguration duramenConfiguration, ScheduledExecutorService executorService,
+	                      Datastore datastore, EventJsonSerializer eventJsonSerializer,
+	                      ExceptionHandler exceptionHandler) {
+		this.duramenConfiguration = duramenConfiguration;
 		this.executorService = executorService;
 		this.datastore = datastore;
 		this.eventJsonSerializer = eventJsonSerializer;
@@ -31,14 +31,22 @@ public class EvenBusContext {
 	}
 
 	public Integer getMaxMessageSize() {
-		return maxMessageSize;
+		return duramenConfiguration.getMaxMessageSize();
 	}
 
 	public Integer getMaxMessageCount() {
-		return maxMessageCount;
+		return duramenConfiguration.getMaxMessageCount();
 	}
 
-	public ExecutorService getExecutorService() {
+	public Integer getRetryDelayInSeconds() {
+		return duramenConfiguration.getRetryDelayInSeconds();
+	}
+
+	public Integer getRetryCount() {
+		return duramenConfiguration.getRetryCount();
+	}
+
+	public ScheduledExecutorService getExecutorService() {
 		return executorService;
 	}
 
@@ -54,4 +62,7 @@ public class EvenBusContext {
 		return exceptionHandler;
 	}
 
+	public Set<Class<? extends Throwable>> getRetryableExceptions() {
+		return duramenConfiguration.getRetryableExceptions();
+	}
 }

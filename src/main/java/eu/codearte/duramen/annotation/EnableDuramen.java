@@ -1,6 +1,6 @@
 package eu.codearte.duramen.annotation;
 
-import eu.codearte.duramen.config.DuramenConfiguration;
+import eu.codearte.duramen.config.DuramenSpringConfiguration;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.ElementType;
@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Import(DuramenConfiguration.class)
+@Import(DuramenSpringConfiguration.class)
 public @interface EnableDuramen {
 
 }

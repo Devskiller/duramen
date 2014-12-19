@@ -4,6 +4,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import eu.codearte.duramen.config.EvenBusContext;
 import eu.codearte.duramen.event.Event;
+import eu.codearte.duramen.event.RetryableEvent;
 import eu.codearte.duramen.handler.EventHandler;
 import org.nustaq.serialization.simpleapi.DefaultCoder;
 import org.slf4j.Logger;
@@ -14,7 +15,11 @@ import org.springframework.stereotype.Component;
 import java.lang.invoke.MethodHandles;
 import java.util.Collection;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -33,7 +38,9 @@ public class EventBus {
 	private final Multimap<String, EventHandler> handlers;
 	private final Semaphore semaphore;
 
-	private DefaultCoder defaultCoder = new DefaultCoder();
+	private final DefaultCoder defaultCoder = new DefaultCoder();
+
+	private final ConcurrentMap<Long, AtomicInteger> retryingEventsMap = new ConcurrentHashMap<>();
 
 	@Autowired
 	public EventBus(EvenBusContext evenBusContext) {
@@ -92,12 +99,7 @@ public class EventBus {
 					eventId, evenBusContext.getEventJsonSerializer().serializeToJson(event));
 		}
 
-		evenBusContext.getExecutorService().submit(new Runnable() {
-			@Override
-			public void run() {
-				processEvent(eventId, event);
-			}
-		});
+		evenBusContext.getExecutorService().submit(getRunnableProcessor(event, eventId));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -107,15 +109,60 @@ public class EventBus {
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Processing event id = {} - found {} valid handlers", eventId, eventHandlers.size());
 		}
+		// we should delete if there are no handlers for this event
+		boolean shouldBeDeleted = true;
 		for (EventHandler handler : eventHandlers) {
+			shouldBeDeleted = false;
 			try {
 				handler.onEvent(event);
+				shouldBeDeleted = true;
 			} catch (Throwable e) {
-				evenBusContext.getExceptionHandler().handleException(event, e, handler);
+				if (eventShouldBeRetried(event, eventId, e)) {
+					evenBusContext.getExecutorService().schedule(getRunnableProcessor(event, eventId),
+							evenBusContext.getRetryDelayInSeconds(), TimeUnit.SECONDS);
+				} else {
+					evenBusContext.getExceptionHandler().handleException(event, e, handler);
+					shouldBeDeleted = true;
+				}
 			}
 		}
-		evenBusContext.getDatastore().deleteEvent(eventId);
-		semaphore.release();
+		if (shouldBeDeleted) {
+			evenBusContext.getDatastore().deleteEvent(eventId);
+			semaphore.release();
+		}
+	}
+
+	private Runnable getRunnableProcessor(final Event event, final Long eventId) {
+		return new Runnable() {
+			@Override
+			public void run() {
+				processEvent(eventId, event);
+			}
+		};
+	}
+
+	private boolean eventShouldBeRetried(Event event, Long eventId, Throwable e) {
+		if (!(event instanceof RetryableEvent)) {
+			return false;
+		}
+
+		boolean isProperException = false;
+		for (Class<? extends Throwable> exceptionClass : evenBusContext.getRetryableExceptions()) {
+			if (exceptionClass.isAssignableFrom(e.getClass())) {
+				isProperException = true;
+				break;
+			}
+		}
+
+		if (!retryingEventsMap.containsKey(eventId) && isProperException) {
+			retryingEventsMap.put(eventId, new AtomicInteger());
+		}
+
+		boolean retryCountExceeded = retryingEventsMap.get(eventId).incrementAndGet() > evenBusContext.getRetryCount();
+		if (retryCountExceeded || !isProperException) {
+			retryingEventsMap.remove(eventId);
+		}
+		return !retryCountExceeded && isProperException;
 	}
 
 	/**

@@ -1,89 +1,115 @@
 package eu.codearte.duramen.config;
 
-import eu.codearte.duramen.DuramenPackageMarker;
-import eu.codearte.duramen.datastore.Datastore;
-import eu.codearte.duramen.datastore.FileData;
-import eu.codearte.duramen.handler.ExceptionHandler;
-import eu.codearte.duramen.internal.EventJsonSerializer;
-import eu.codearte.duramen.internal.LoggingExceptionHandler;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
+import com.google.common.collect.Sets;
 
-import java.io.IOException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Set;
 
 /**
- * Main configuration class. Handles all optional dependencies which allows
- * user to override default settings
- *
  * @author Jakub Kubrynski
  */
-@SuppressWarnings("FieldCanBeLocal")
-@Configuration
-@ComponentScan(basePackageClasses = DuramenPackageMarker.class, excludeFilters = @ComponentScan.Filter(Configuration.class))
 public class DuramenConfiguration {
 
-	@Autowired(required = false)
-	@Qualifier("maxMessageSize")
-	private Integer maxMessageSize = 4096;
+	private final Integer maxMessageSize;
+	private final Integer maxMessageCount;
+	private final Integer maxProcessingThreads;
+	private final Integer retryDelayInSeconds;
+	private final Integer retryCount;
+	private final Boolean useDaemonThreads;
+	private final Set<Class<? extends Throwable>> retryableExceptions;
 
-	@Autowired(required = false)
-	@Qualifier("maxMessageCount")
-	private Integer maxMessageCount = 1024;
+	private DuramenConfiguration(Integer maxMessageSize, Integer maxMessageCount, Integer maxProcessingThreads,
+	                             Integer retryDelayInSeconds, Integer retryCount, Boolean useDaemonThreads,
+	                             Set<Class<? extends Throwable>> retryableExceptions) {
 
-	@Autowired(required = false)
-	@Qualifier("maxProcessingThreads")
-	private Integer maxProcessingThreads = 1;
-
-	@Autowired(required = false)
-	@Qualifier("useDaemonThreads")
-	private Boolean useDaemonThreads = true;
-
-	@Autowired(required = false)
-	private Datastore datastore;
-
-	@Autowired(required = false)
-	@Qualifier("duramenExecutorService")
-	private ExecutorService executorService;
-
-	@Autowired(required = false)
-	private ExceptionHandler exceptionHandler;
-
-	@Autowired
-	private EventJsonSerializer eventJsonSerializer;
-
-	@Bean
-	public EvenBusContext evenBusProperties() throws IOException {
-		if (executorService == null) {
-			executorService = Executors.newFixedThreadPool(maxProcessingThreads, buildThreadFactory());
-		}
-		if (datastore == null) {
-			datastore = new FileData(FileData.DEFAULT_FILENAME, maxMessageCount, maxMessageSize);
-		}
-		if (exceptionHandler == null) {
-			exceptionHandler = new LoggingExceptionHandler(eventJsonSerializer);
-		}
-		return new EvenBusContext(maxMessageSize, maxMessageCount,
-				executorService, datastore, eventJsonSerializer, exceptionHandler);
+		this.maxMessageSize = maxMessageSize;
+		this.maxMessageCount = maxMessageCount;
+		this.maxProcessingThreads = maxProcessingThreads;
+		this.retryDelayInSeconds = retryDelayInSeconds;
+		this.retryCount = retryCount;
+		this.useDaemonThreads = useDaemonThreads;
+		this.retryableExceptions = retryableExceptions;
 	}
 
-	private ThreadFactory buildThreadFactory() {
-		final AtomicInteger threadNumerator = new AtomicInteger(0);
+	public Integer getMaxMessageSize() {
+		return maxMessageSize;
+	}
 
-		return new ThreadFactory() {
-			@Override
-			public Thread newThread(Runnable r) {
-				Thread thread = new Thread(r);
-				thread.setDaemon(useDaemonThreads);
-				thread.setName("DuramenProcessingThread-" + threadNumerator.incrementAndGet());
-				return thread;
-			}
-		};
+	public Integer getMaxMessageCount() {
+		return maxMessageCount;
+	}
+
+	public Integer getMaxProcessingThreads() {
+		return maxProcessingThreads;
+	}
+
+	public Integer getRetryDelayInSeconds() {
+		return retryDelayInSeconds;
+	}
+
+	public Integer getRetryCount() {
+		return retryCount;
+	}
+
+	public Boolean getUseDaemonThreads() {
+		return useDaemonThreads;
+	}
+
+	public Set<Class<? extends Throwable>> getRetryableExceptions() {
+		return retryableExceptions;
+	}
+
+	public static DuramenConfigurationBuilder builder() {
+		return new DuramenConfigurationBuilder();
+	}
+
+	public static class DuramenConfigurationBuilder {
+		private Integer maxMessageSize = 4096;
+		private Integer maxMessageCount = 1024;
+		private Integer maxProcessingThreads = 1;
+		private Integer retryDelayInSeconds = 5;
+		private Integer retryCount = 3;
+		private Boolean useDaemonThreads = true;
+		@SuppressWarnings("unchecked")
+		private Set<Class<? extends Throwable>> retryableExceptions = Sets.<Class<? extends Throwable>>newHashSet(Throwable.class);
+
+		public DuramenConfiguration build() {
+			return new DuramenConfiguration(maxMessageSize, maxMessageCount, maxProcessingThreads,
+					retryDelayInSeconds, retryCount, useDaemonThreads, retryableExceptions);
+		}
+
+		public DuramenConfigurationBuilder maxMessageSize(Integer maxMessageSize) {
+			this.maxMessageSize = maxMessageSize;
+			return this;
+		}
+
+		public DuramenConfigurationBuilder maxMessageCount(Integer maxMessageCount) {
+			this.maxMessageCount = maxMessageCount;
+			return this;
+		}
+
+		public DuramenConfigurationBuilder maxProcessingThreads(Integer maxProcessingThreads) {
+			this.maxProcessingThreads = maxProcessingThreads;
+			return this;
+		}
+
+		public DuramenConfigurationBuilder retryDelayInSeconds(Integer retryDelayInSeconds) {
+			this.retryDelayInSeconds = retryDelayInSeconds;
+			return this;
+		}
+
+		public DuramenConfigurationBuilder retryCount(Integer retryCount) {
+			this.retryCount = retryCount;
+			return this;
+		}
+
+		public DuramenConfigurationBuilder useDaemonThreads(Boolean useDaemonThreads) {
+			this.useDaemonThreads = useDaemonThreads;
+			return this;
+		}
+
+		public DuramenConfigurationBuilder retryableExceptions(Class<? extends Throwable>... retryableExceptions) {
+			this.retryableExceptions = Sets.newHashSet(retryableExceptions);
+			return this;
+		}
 	}
 }
