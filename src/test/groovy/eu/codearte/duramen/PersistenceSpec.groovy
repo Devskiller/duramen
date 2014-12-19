@@ -1,6 +1,7 @@
 package eu.codearte.duramen
 
 import eu.codearte.duramen.annotation.EnableDuramen
+import eu.codearte.duramen.datastore.FileData
 import eu.codearte.duramen.handler.EventHandler
 import eu.codearte.duramen.test.EventProducer
 import eu.codearte.duramen.test.TestEvent
@@ -9,6 +10,8 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import spock.lang.Specification
 
+import java.nio.file.Files
+import java.nio.file.Paths
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.locks.LockSupport
 
@@ -26,6 +29,7 @@ class PersistenceSpec extends Specification {
 
 	def "should process event after crash"() {
 		given:
+			Files.delete(Paths.get(FileData.DEFAULT_FILENAME))
 			def context = new AnnotationConfigApplicationContext(SampleConfigurationWrongConsumer)
 			def eventProducer = context.getBean(EventProducer)
 		when:
