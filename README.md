@@ -69,6 +69,8 @@ public class FooEventConsumer implements EventHandler<FooEvent> {
 
 All Spring beans implementing ```EventHandler``` interface will be automatically registered as handlers. It's also possible to manually register ```EventHandler``` by invoking ```eventBus.register(qualifiedEventClassName, eventHandler)``` method.
 
+6) If you want to retry events after some error occur you just have to implement ```RetryableEvent``` instead of ```Event```
+
 ##Testing
 
 Usually in test scope we don't want to persist our events. To achieve such behaviour we can configure custom bean:
