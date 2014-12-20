@@ -1,6 +1,6 @@
 package io.codearte.duramen.benchmark.config;
 
-import eu.codearte.duramen.handler.EventHandler;
+import io.codearte.duramen.handler.EventHandler;
 import io.codearte.duramen.benchmark.event.SimpleEvent;
 import org.springframework.context.annotation.Bean;
 

@@ -39,7 +39,7 @@ class PersistenceSpec extends Specification {
 			await().atMost(TWO_SECONDS).untilAtomic(goodHandlerInvoked, equalTo(true))
 	}
 
-	@ComponentScan(basePackages = "eu.codearte.duramen.test")
+	@ComponentScan(basePackages = "io.codearte.duramen.test")
 	@EnableDuramen
 	static class SampleConfigurationWrongConsumer {
 		@Bean
@@ -54,7 +54,7 @@ class PersistenceSpec extends Specification {
 		}
 	}
 
-	@ComponentScan(basePackages = "eu.codearte.duramen.test")
+	@ComponentScan(basePackages = "io.codearte.duramen.test")
 	@EnableDuramen
 	static class SampleConfigurationGoodConsumer {
 		@Bean

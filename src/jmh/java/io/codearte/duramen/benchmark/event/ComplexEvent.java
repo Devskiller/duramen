@@ -1,7 +1,7 @@
 package io.codearte.duramen.benchmark.event;
 
 import com.google.common.collect.Lists;
-import eu.codearte.duramen.event.Event;
+import io.codearte.duramen.event.Event;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

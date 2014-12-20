@@ -40,7 +40,7 @@ class EventBusSpecIT extends Specification {
 	}
 
 	@Configuration
-	@ComponentScan(basePackages = "eu.codearte.duramen.test")
+	@ComponentScan(basePackages = "io.codearte.duramen.test")
 	@EnableDuramen
 	static class SampleConfiguration {
 

@@ -1,6 +1,6 @@
 package io.codearte.duramen.benchmark.event;
 
-import eu.codearte.duramen.event.Event;
+import io.codearte.duramen.event.Event;
 
 /**
  * @author Jakub Kubrynski

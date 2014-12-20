@@ -1,8 +1,8 @@
 package io.codearte.duramen.benchmark.config;
 
-import eu.codearte.duramen.annotation.EnableDuramen;
-import eu.codearte.duramen.datastore.Datastore;
-import eu.codearte.duramen.datastore.FileData;
+import io.codearte.duramen.annotation.EnableDuramen;
+import io.codearte.duramen.datastore.Datastore;
+import io.codearte.duramen.datastore.FileData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

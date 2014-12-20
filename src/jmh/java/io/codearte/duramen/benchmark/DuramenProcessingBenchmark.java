@@ -1,7 +1,7 @@
 package io.codearte.duramen.benchmark;
 
-import eu.codearte.duramen.EventBus;
-import eu.codearte.duramen.event.Event;
+import io.codearte.duramen.EventBus;
+import io.codearte.duramen.event.Event;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Param;
@@ -52,7 +52,7 @@ public class DuramenProcessingBenchmark {
 	}
 
 	private Class<?> getClassForSimpleName(String simpleName) throws ClassNotFoundException {
-		return Class.forName("eu.codearte.duramen.benchmark." + simpleName);
+		return Class.forName("io.codearte.duramen.benchmark." + simpleName);
 	}
 
 	@TearDown(Level.Iteration)

@@ -61,7 +61,7 @@ class RetryableSpec extends Specification {
 			await().atMost(FIVE_SECONDS).untilAtomic(goodHandlerInvoked, equalTo(false))
 	}
 
-	@ComponentScan(basePackages = "eu.codearte.duramen.test")
+	@ComponentScan(basePackages = "io.codearte.duramen.test")
 	@EnableDuramen
 	static class SampleConfiguration {
 
