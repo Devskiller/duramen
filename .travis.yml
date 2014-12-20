@@ -5,5 +5,5 @@ jdk:
  - openjdk7
  - oraclejdk8
 
-install: ./gradlew assemble
-script: ./gradlew check --stacktrace --info
+install: ./gradlew assemble jmhClasses
+script: ./gradlew check --stacktrace --info --continue
