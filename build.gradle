@@ -1,3 +1,13 @@
+apply plugin: 'pl.allegro.tech.build.axion-release'
+
+scmVersion {
+	tag {
+		prefix = 'duramen'
+	}
+	createReleaseCommit = true
+}
+project.version = scmVersion.version
+
 apply plugin: 'java'
 apply plugin: 'groovy'
 apply plugin: 'maven'
@@ -8,7 +18,6 @@ apply from: 'gradle/release-duramen.gradle'
 apply from: 'gradle/release.gradle'
 
 sourceCompatibility = 1.7
-targetCompatibility = 1.7
 
 buildscript {
 	repositories {
@@ -19,6 +28,7 @@ buildscript {
 	dependencies {
 		classpath 'org.hibernate.build.gradle:gradle-upload-auth-plugin:1.1.1'
 		classpath 'me.champeau.gradle:jmh-gradle-plugin:0.1.3'
+		classpath 'pl.allegro.tech.build:axion-release-plugin:0.9.9'
 	}
 }
 
