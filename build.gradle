@@ -65,6 +65,6 @@ jmh {
 	forceGC = true
 }
 
-task wrapper(type: Wrapper) {
-	gradleVersion = '1.12'
+wrapper {
+	gradleVersion '2.2.1'
 }
