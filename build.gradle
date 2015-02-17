@@ -71,6 +71,12 @@ dependencies {
 	jmh project.configurations.compile
 }
 
+test {
+	testLogging {
+		exceptionFormat = 'full'
+	}
+}
+
 jmh {
 	warmupIterations = 10
 	iterations = 20
