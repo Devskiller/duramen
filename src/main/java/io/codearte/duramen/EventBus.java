@@ -127,6 +127,9 @@ public class EventBus {
 			}
 		}
 		if (shouldBeDeleted) {
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("Deleting event {}", eventId);
+			}
 			evenBusContext.getDatastore().deleteEvent(eventId);
 			semaphore.release();
 		}

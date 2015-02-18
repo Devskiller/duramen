@@ -1,4 +1,4 @@
-package io.codearte.duramen.test;
+package test.codearte.duramen;
 
 import io.codearte.duramen.EventBus;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,23 +1,23 @@
-package io.codearte.duramen.test;
+package test.codearte.duramen;
 
-import io.codearte.duramen.event.Event;
+import io.codearte.duramen.event.RetryableEvent;
 
 import java.util.Date;
 
 /**
  * Created by jkubrynski@gmail.com / 2014-02-10
  */
-public class TestEvent implements Event {
+public class TestRetryableEvent implements RetryableEvent {
 
 	private String test;
 
 	private Date date1;
 
-	private TestEvent() {
+	private TestRetryableEvent() {
 //		just for persistence
 	}
 
-	public TestEvent(String test) {
+	public TestRetryableEvent(String test) {
 		this.test = test;
 		this.date1 = new Date();
 	}
@@ -26,7 +26,7 @@ public class TestEvent implements Event {
 		return test;
 	}
 
-	public void setTest(String test) {
-		this.test = test;
+	public Date getDate1() {
+		return date1;
 	}
 }

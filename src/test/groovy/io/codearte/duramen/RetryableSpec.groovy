@@ -5,13 +5,13 @@ import io.codearte.duramen.config.DuramenConfiguration
 import io.codearte.duramen.datastore.Datastore
 import io.codearte.duramen.datastore.InMemory
 import io.codearte.duramen.handler.EventHandler
-import io.codearte.duramen.test.RetryableEventProducer
-import io.codearte.duramen.test.TestRetryableEvent
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import spock.lang.Specification
+import test.codearte.duramen.RetryableEventProducer
+import test.codearte.duramen.TestRetryableEvent
 
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -61,7 +61,7 @@ class RetryableSpec extends Specification {
 			await().atMost(FIVE_SECONDS).untilAtomic(goodHandlerInvoked, equalTo(false))
 	}
 
-	@ComponentScan(basePackages = "io.codearte.duramen.test")
+	@ComponentScan(basePackages = "test.codearte.duramen")
 	@EnableDuramen
 	static class SampleConfiguration {
 

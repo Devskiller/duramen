@@ -3,9 +3,6 @@ package io.codearte.duramen
 import io.codearte.duramen.annotation.EnableDuramen
 import io.codearte.duramen.datastore.Datastore
 import io.codearte.duramen.datastore.InMemory
-import io.codearte.duramen.test.EventConsumer
-import io.codearte.duramen.test.EventProducer
-import io.codearte.duramen.test.TestEvent
 import org.kubek2k.springockito.annotations.SpringockitoAnnotatedContextLoader
 import org.kubek2k.springockito.annotations.WrapWithSpy
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,6 +11,9 @@ import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
+import test.codearte.duramen.EventConsumer
+import test.codearte.duramen.EventProducer
+import test.codearte.duramen.TestEvent
 
 import static org.mockito.Matchers.isA
 import static org.mockito.Mockito.timeout
@@ -40,7 +40,7 @@ class EventBusSpecIT extends Specification {
 	}
 
 	@Configuration
-	@ComponentScan(basePackages = "io.codearte.duramen.test")
+	@ComponentScan(basePackages = "test.codearte.duramen")
 	@EnableDuramen
 	static class SampleConfiguration {
 
