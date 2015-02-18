@@ -2,12 +2,11 @@ package io.codearte.duramen
 
 import io.codearte.duramen.annotation.EnableDuramen
 import io.codearte.duramen.handler.EventHandler
-import io.codearte.duramen.test.EventProducer
-import io.codearte.duramen.test.TestEvent
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.ComponentScan
 import spock.lang.Specification
+import test.codearte.duramen.EventProducer
+import test.codearte.duramen.TestEvent
 
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.locks.LockSupport
@@ -39,24 +38,31 @@ class PersistenceSpec extends Specification {
 			await().atMost(TWO_SECONDS).untilAtomic(goodHandlerInvoked, equalTo(true))
 	}
 
-	@ComponentScan(basePackages = "io.codearte.duramen.test")
 	@EnableDuramen
 	static class SampleConfigurationWrongConsumer {
+
+		@Bean
+		EventProducer eventProducer(EventBus eventBus) {
+			return new EventProducer(eventBus)
+		}
+
 		@Bean
 		EventHandler eventHandler() {
 			return new EventHandler<TestEvent>() {
 				@Override
 				void onEvent(TestEvent event) {
 					wrongHandlerInvoked.set(true)
-					LockSupport.park()
+					while (true) {
+						LockSupport.park()
+					}
 				}
 			}
 		}
 	}
 
-	@ComponentScan(basePackages = "io.codearte.duramen.test")
 	@EnableDuramen
 	static class SampleConfigurationGoodConsumer {
+
 		@Bean
 		EventHandler eventHandler() {
 			return new EventHandler<TestEvent>() {
