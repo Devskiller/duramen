@@ -4,13 +4,17 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import io.codearte.duramen.config.EvenBusContext;
 import io.codearte.duramen.event.Event;
+import io.codearte.duramen.event.ProcessAfterCommit;
 import io.codearte.duramen.event.RetryableEvent;
 import io.codearte.duramen.handler.EventHandler;
 import org.nustaq.serialization.simpleapi.DefaultCoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.support.TransactionSynchronizationAdapter;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.lang.invoke.MethodHandles;
 import java.util.Collection;
@@ -99,7 +103,24 @@ public class EventBus {
 					eventId, evenBusContext.getEventJsonSerializer().serializeToJson(event));
 		}
 
-		evenBusContext.getExecutorService().submit(getRunnableProcessor(event, eventId));
+		if (TransactionSynchronizationManager.isActualTransactionActive() && isTransactionAwareEvent(event)) {
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("Event {} will be processed after transaction commit", eventId);
+			}
+			TransactionSynchronizationManager.registerSynchronization(
+					new TransactionSynchronizationAdapter() {
+						@Override
+						public void afterCommit() {
+							evenBusContext.getExecutorService().submit(getRunnableProcessor(event, eventId));
+						}
+					});
+		} else {
+			evenBusContext.getExecutorService().submit(getRunnableProcessor(event, eventId));
+		}
+	}
+
+	private boolean isTransactionAwareEvent(Event event) {
+		return AnnotationUtils.isAnnotationDeclaredLocally(ProcessAfterCommit.class, event.getClass());
 	}
 
 	@SuppressWarnings("unchecked")
