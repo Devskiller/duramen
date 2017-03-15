@@ -5,6 +5,9 @@ import io.codearte.duramen.datastore.Datastore
 import io.codearte.duramen.datastore.InMemory
 import org.kubek2k.springockito.annotations.SpringockitoAnnotatedContextLoader
 import org.kubek2k.springockito.annotations.WrapWithSpy
+
+//import org.kubek2k.springockito.annotations.SpringockitoAnnotatedContextLoader
+//import org.kubek2k.springockito.annotations.WrapWithSpy
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
