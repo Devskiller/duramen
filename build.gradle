@@ -1,51 +1,40 @@
-apply plugin: 'pl.allegro.tech.build.axion-release'
+plugins {
+	id 'groovy'
+	id 'java-gradle-plugin'
+	id 'maven'
+	id 'pl.allegro.tech.build.axion-release' version '1.5.0'
+	id "com.bmuschko.nexus" version "2.3.1" apply false
+	id "io.codearte.nexus-staging" version "0.5.3" apply false
+	id "me.champeau.gradle.jmh" version "0.3.1"
+}
 
 scmVersion {
 	tag {
 		prefix = 'duramen'
 	}
 	hooks {
-		pre 'fileUpdate', [file: 'README.md', pattern: {v, p -> /`io\.codearte\.duramen:duramen:.*`/}, replacement: {v, p -> "`io.codearte.duramen:duramen:$v`"}]
+		pre 'fileUpdate', [file: 'README.md', pattern: { v, p -> /`io\.codearte\.duramen:duramen:.*`/ }, replacement: { v, p -> "`io.codearte.duramen:duramen:$v`" }]
 	}
 	createReleaseCommit = true
 }
+
 project.version = scmVersion.version
-
-apply plugin: 'java'
-apply plugin: 'groovy'
-apply plugin: 'maven'
-apply plugin: 'uploadAuth'
-apply plugin: 'me.champeau.gradle.jmh'
-
-apply from: 'gradle/release-duramen.gradle'
-apply from: 'gradle/release.gradle'
+group = 'io.codearte.duramen'
+description = 'Java persistent event bus'
 
 sourceCompatibility = 1.7
-
-buildscript {
-	repositories {
-		mavenCentral()
-		mavenLocal()
-		jcenter()
-	}
-	dependencies {
-		classpath 'org.hibernate.build.gradle:gradle-upload-auth-plugin:1.1.1'
-		classpath 'me.champeau.gradle:jmh-gradle-plugin:0.1.3'
-		classpath 'pl.allegro.tech.build:axion-release-plugin:1.2.0'
-	}
-}
 
 repositories {
 	mavenCentral()
 }
 
 ext {
-	springVersion = "[3.2.2.RELEASE,)"
+	springVersion = "4.3.7.RELEASE"
 	guavaVersion = "[11.0,)"
-	slf4jVersion = "[1.6.0,)"
-	h2Version = "[1.2.120,)"
-	jacksonVersion = "[2.1.0,)"
-	jmhVersion = "1.1.1"
+	slf4jVersion = "1.7.24"
+	h2Version = "1.4.193"
+	jacksonVersion = "2.8.7"
+	jmhVersion = "1.18"
 }
 
 dependencies {
@@ -54,17 +43,16 @@ dependencies {
 	compile "org.springframework:spring-jdbc:${springVersion}"
 	compile "com.google.guava:guava:${guavaVersion}"
 	compile "com.h2database:h2:${h2Version}"
-	compile "de.ruedigermoeller:fst:2.17"
+	compile "de.ruedigermoeller:fst:2.48"
 	compile "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
 	compile "net.openhft:collections:3.2.2"
 	testCompile "org.springframework:spring-test:${springVersion}"
-	testCompile "org.spockframework:spock-core:0.7-groovy-2.0"
-	testCompile "org.spockframework:spock-spring:0.7-groovy-2.0"
-	testCompile "org.kubek2k:springockito-annotations:1.0.9"
+	testCompile "org.spockframework:spock-core:1.0-groovy-2.4"
+	testCompile "org.spockframework:spock-spring:1.0-groovy-2.4"
 	testCompile "org.mockito:mockito-all:1.9.5"
 	testCompile "ch.qos.logback:logback-classic:1.1.1"
 	testCompile "org.slf4j:jcl-over-slf4j:${slf4jVersion}"
-	testCompile "com.jayway.awaitility:awaitility-groovy:1.6.1"
+	testCompile "com.jayway.awaitility:awaitility-groovy:1.7.0"
 
 	jmh "org.openjdk.jmh:jmh-core:${jmhVersion}"
 	jmh "org.openjdk.jmh:jmh-generator-annprocess:${jmhVersion}"
@@ -85,5 +73,5 @@ jmh {
 }
 
 wrapper {
-	gradleVersion '2.2.1'
+	gradleVersion '3.4.1'
 }
