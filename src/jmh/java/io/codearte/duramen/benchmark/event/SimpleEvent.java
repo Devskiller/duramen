@@ -13,4 +13,7 @@ public class SimpleEvent implements Event {
 		payload = "TEST";
 	}
 
+	public String getPayload() {
+		return payload;
+	}
 }

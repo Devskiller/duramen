@@ -1,7 +1,4 @@
 .idea/
 duramen.iml
-.gradle/
-build/
-out/
-classes
+target/
 duramen.data
