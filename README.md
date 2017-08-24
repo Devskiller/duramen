@@ -70,6 +70,8 @@ All Spring beans implementing ```EventHandler``` interface will be automatically
 
 6) If you want to retry events after some error occur you just have to implement ```RetryableEvent``` instead of ```Event```
 
+7) If you want to use transaction-aware events just please annotate ```Event``` classes with `@ProcessAfterCommit`. As the name suggests such events will be processed after committing the transaction.
+
 ## Testing
 
 Usually in test scope we don't want to persist our events. To achieve such behaviour we can configure custom bean:
