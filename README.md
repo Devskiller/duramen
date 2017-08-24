@@ -2,7 +2,7 @@
 
 Persistent event bus implementation for Java. Easily integrates with Spring Framework. By default uses file backed database. Guarantees that event will be dispatched.
 
-##Usage
+## Usage
 
 1) Add Duramen dependency:
   `io.codearte.duramen:duramen:1.1.0`
@@ -70,7 +70,7 @@ All Spring beans implementing ```EventHandler``` interface will be automatically
 
 6) If you want to retry events after some error occur you just have to implement ```RetryableEvent``` instead of ```Event```
 
-##Testing
+## Testing
 
 Usually in test scope we don't want to persist our events. To achieve such behaviour we can configure custom bean:
 ```java
@@ -82,17 +82,17 @@ public Datastore inMemoryDatastore() {
 }
 ```
 
-##Error handling
+## Error handling
 
 When ```EventHandler``` processing bean throws an exception, it will be logged with event data serialized to JSON.
 
 You can specify custom ```ExceptionHandler``` by creating bean implementing ```io.codearte.duramen.handler.ExceptionHandler``` interface.
 
-##Available datastores
+## Available datastores
 
 In Duramen there are 2 ```Datastore``` objects.
 
-###FileData
+### FileData
 
 Default implementation. Backed by [Chronicle Map](https://github.com/OpenHFT/Chronicle-Map). It stores events in binary file (by default duramen.data).
 To use this implementation you don't have to do anything, as long as you accept default values (see "Specifying messages limits").
@@ -107,11 +107,11 @@ public Datastore fileDatastore() {
 }
 ```
 
-###In memory
+### In memory
 
 We've already described ```InMemory``` datastore in "Testing" section
 
-##Customizing default configuration
+## Customizing default configuration
 
 As you can see to use Duramen no configuration is required. However if you want, there are some options to customize.
 To do that just provide ```DuramenConfiguration``` bean:
@@ -123,7 +123,7 @@ public DuramenConfiguration duramenConfiguration() {
 }
 ```
 
-###Specifying messages limits
+### Specifying messages limits
 
 By default message size is set to 4096 bytes. You can change this value by defining bean:
 
@@ -138,7 +138,7 @@ DuramenConfiguration.builder().maxMessageCount(2048).build()
 }
 ```
 
-###Retrying options
+### Retrying options
 
 By default Duramen reties all ```RetryableEvent``` events after any exception 3 times with 5 seconds delay. Of course you can customize
 those settings by ```DuramenConfiguration```:
@@ -148,7 +148,7 @@ DuramenConfiguration.builder().retryDelayInSeconds(5).retryCount(10)
 		.retryableExceptions(SocketTimeoutException.class).build()
 ```
 
-###Processing options
+### Processing options
 
 By default Duramen uses daemon threads, but it can be easily changes by declaring:
 
@@ -170,7 +170,7 @@ public ExecutorService duramenExecutorService() {
 }
 ```
 
-##Performance
+## Performance
 
 Performance tests executed using JMH on Linux-4.12.5, Intel(R) Core(TM) i7-7820HQ CPU @ 2.90GHz
 
