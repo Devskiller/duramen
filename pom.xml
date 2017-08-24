@@ -241,8 +241,6 @@
                         <version>3.0.0</version>
                         <executions>
                             <execution>
-                                <id>add-test-source</id>
-                                <phase>generate-test-sources</phase>
                                 <goals>
                                     <goal>add-test-source</goal>
                                     <goal>add-test-resource</goal>
@@ -269,7 +267,6 @@
                                 <goals>
                                     <goal>testCompile</goal>
                                 </goals>
-
                                 <configuration>
                                     <annotationProcessorPaths>
                                         <path>
@@ -285,6 +282,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.6.0</version>
                         <executions>
                             <execution>
                                 <id>run-benchmarks</id>
