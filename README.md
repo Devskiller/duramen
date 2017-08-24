@@ -90,11 +90,11 @@ You can specify custom ```ExceptionHandler``` by creating bean implementing ```i
 
 ##Available datastores
 
-In Duramen there are 3 ```Datastore``` objects.
+In Duramen there are 2 ```Datastore``` objects.
 
 ###FileData
 
-Default implementation. Backed by [HugeCollections](https://github.com/OpenHFT/HugeCollections) SharedHashMap. It stores events in binary file (by default duramen.data).
+Default implementation. Backed by [Chronicle Map](https://github.com/OpenHFT/Chronicle-Map). It stores events in binary file (by default duramen.data).
 To use this implementation you don't have to do anything, as long as you accept default values (see "Specifying messages limits").
 To change defaults you need create own bean:
 
@@ -106,31 +106,6 @@ public Datastore fileDatastore() {
 	return new FileData("/tmp/myfile.data", /*entries*/ 10, /*entrySize*/ 8192);
 }
 ```
-
-###Embedded H2
-
-You can also use embedded H2 database.
-
-```java
-import io.codearte.duramen.datastore.EmbeddedH2;
-
-@Bean
-public Datastore embeddedH2Datastore() {
-	return EmbeddedH2();
-}
- 
-// or
-
-@Bean
-public Datastore embeddedH2Datastore() {
-	return EmbeddedH2("jdbc:h2:file:/tmp/duramen.data");
-}
-```
-
-###Relational DB
-
-If you want to use your own relational database as a ```Datastore``` it is of course possible. 
-You just need to create class extending ```io.codearte.duramen.datastore.RelationalDB```
 
 ###In memory
 
@@ -197,16 +172,14 @@ public ExecutorService duramenExecutorService() {
 
 ##Performance
 
-Performance tests executed using JMH on Linux-3.15.4, Intel(R) Core(TM) i7-4600U CPU @ 2.10GHz
+Performance tests executed using JMH on Linux-4.12.5, Intel(R) Core(TM) i7-7820HQ CPU @ 2.90GHz
 
 | Datastore | Event type* | Events / second |
 | --------- |-------------| ---------------:|
-| Filedata  | Simple      |         232 000 |
-| Filedata  | Complex     |         203 000 |
-| InMemory  | Simple      |       1 036 559 |
-| InMemory  | Complex     |         291 000 |
-| H2        | Simple      |           4 200 |
-| H2        | Complex     |             150 |
+| Filedata  | Simple      |         943 431 |
+| Filedata  | Complex     |         326 803 |
+| InMemory  | Simple      |       1 494 560 |
+| InMemory  | Complex     |         384 291 |
 
 - Simple event contains one short String field
 - Complex event contains 512 chars String field, one BigDecimal field and 6 element ArrayList of Integers

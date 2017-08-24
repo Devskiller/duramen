@@ -1,16 +1,16 @@
 package io.codearte.duramen.datastore;
 
-import com.google.common.base.Strings;
-import io.codearte.duramen.generator.IdGenerator;
-import io.codearte.duramen.generator.RandomIdGenerator;
-import net.openhft.collections.SharedHashMapBuilder;
-
 import javax.annotation.PreDestroy;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.google.common.base.Strings;
+import io.codearte.duramen.generator.IdGenerator;
+import io.codearte.duramen.generator.RandomIdGenerator;
+import net.openhft.chronicle.map.ChronicleMapBuilder;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -40,11 +40,10 @@ public class FileData implements Datastore {
 		checkArgument(entries > 0);
 		checkArgument(entrySize > 0);
 
-		sharedHashMap = SharedHashMapBuilder.of(Long.class, byte[].class)
+		sharedHashMap = ChronicleMapBuilder.of(Long.class, byte[].class)
 				.entries(entries)
-				.entrySize(entrySize)
-				.file(new File(path))
-				.create();
+				.averageValueSize(entrySize)
+				.createPersistedTo(new File(path));
 	}
 
 	@Override

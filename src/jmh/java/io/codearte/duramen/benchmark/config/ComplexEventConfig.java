@@ -1,5 +1,6 @@
 package io.codearte.duramen.benchmark.config;
 
+import io.codearte.duramen.config.DuramenConfiguration;
 import io.codearte.duramen.handler.EventHandler;
 import io.codearte.duramen.benchmark.event.ComplexEvent;
 import org.springframework.context.annotation.Bean;
@@ -10,13 +11,12 @@ import org.springframework.context.annotation.Bean;
 public class ComplexEventConfig {
 
 	@Bean
-	public Integer maxMessageSize() {
-		return 1536;
-	}
-
-	@Bean
-	public Integer maxMessageCount() {
-		return 1024;
+	public DuramenConfiguration duramenConfiguration() {
+		return DuramenConfiguration.builder()
+				.maxMessageCount(1024)
+				.maxMessageSize(1536)
+				.maxProcessingThreads(1)
+				.build();
 	}
 
 	@Bean

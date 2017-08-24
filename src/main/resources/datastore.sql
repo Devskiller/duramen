@@ -1,1 +1,0 @@
-CREATE TABLE EVENTS (ID bigint auto_increment, EVENT BLOB);

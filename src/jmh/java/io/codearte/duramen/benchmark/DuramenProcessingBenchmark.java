@@ -25,8 +25,8 @@ import java.lang.reflect.InvocationTargetException;
  */
 @State(Scope.Benchmark)
 @SuppressWarnings({"unchecked", "unused"})
-@Warmup(iterations = 1)
-@Measurement(iterations = 2)
+@Warmup(iterations = 10)
+@Measurement(iterations = 20)
 @Fork(2)
 public class DuramenProcessingBenchmark {
 
@@ -36,7 +36,7 @@ public class DuramenProcessingBenchmark {
 	@Param({"SimpleEvent", "ComplexEvent"})
 	private String eventTestCase;
 
-	@Param({"Filedata", "H2", "InMemory"})
+	@Param({"Filedata", "InMemory"})
 	private String datastoreTestCase;
 
 	private Constructor<Event> eventConstructor;

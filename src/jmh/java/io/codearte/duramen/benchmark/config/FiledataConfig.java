@@ -1,6 +1,7 @@
 package io.codearte.duramen.benchmark.config;
 
 import io.codearte.duramen.annotation.EnableDuramen;
+import io.codearte.duramen.config.DuramenConfiguration;
 import io.codearte.duramen.datastore.Datastore;
 import io.codearte.duramen.datastore.FileData;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +19,11 @@ import java.util.UUID;
 class FiledataConfig {
 
 	@Autowired
-	private Integer maxMessageSize;
-
-	@Autowired
-	private Integer maxMessageCount;
+	private DuramenConfiguration duramenConfiguration;
 
 	@Bean
 	public Datastore datastore() throws IOException {
-		return new FileData("/tmp/perf_duramen_" + UUID.randomUUID().toString(), maxMessageCount, maxMessageSize);
+		return new FileData("/tmp/perf_duramen_" + UUID.randomUUID().toString(),
+				duramenConfiguration.getMaxMessageCount(), duramenConfiguration.getMaxMessageSize());
 	}
 }

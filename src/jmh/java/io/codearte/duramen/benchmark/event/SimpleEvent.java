@@ -7,7 +7,7 @@ import io.codearte.duramen.event.Event;
  */
 public class SimpleEvent implements Event {
 
-	String payload;
+	private String payload;
 
 	public SimpleEvent() {
 		payload = "TEST";

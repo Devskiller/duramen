@@ -1,8 +1,5 @@
 package io.codearte.duramen.datastore
 
-import org.springframework.context.annotation.AnnotationConfigApplicationContext
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -25,24 +22,11 @@ class DatastoreSpecIT extends Specification {
 			eventsMap.containsKey(eventId)
 			eventsMap.get(eventId) == eventBytes
 		where:
-			datastore << [new InMemory(), new FileData(FILENAME, 1024, 4096), getEmbeddedH2()]
+			datastore << [new InMemory(), new FileData(FILENAME, 1024, 4096)]
 	}
 
 	def cleanupSpec() {
 		new File(FILENAME).delete()
 	}
 
-	private EmbeddedH2 getEmbeddedH2() {
-		new AnnotationConfigApplicationContext(H2Config).getBean(EmbeddedH2)
-	}
-
-	@Configuration
-	private static class H2Config {
-
-		@Bean
-		EmbeddedH2 embeddedH2() {
-			new EmbeddedH2("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1")
-		}
-
-	}
 }
