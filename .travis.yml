@@ -1,8 +1,6 @@
 language: java
 
 jdk:
- - oraclejdk7
  - oraclejdk8
 
-install: ./gradlew assemble jmhClasses
-script: ./gradlew check --stacktrace --info --continue
+script: ./mvnw clean verify jacoco:report

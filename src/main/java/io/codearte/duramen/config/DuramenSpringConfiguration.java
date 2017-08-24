@@ -70,7 +70,7 @@ public class DuramenSpringConfiguration {
 			public Thread newThread(Runnable r) {
 				Thread thread = new Thread(r);
 				thread.setDaemon(duramenConfiguration.getUseDaemonThreads());
-				thread.setName("DuramenProcessingThread-" + threadNumerator.incrementAndGet());
+				thread.setName("duramen-" + threadNumerator.incrementAndGet());
 				return thread;
 			}
 		};

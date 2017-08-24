@@ -21,4 +21,15 @@ public class ComplexEvent implements Event {
 		integers = Lists.newArrayList(123, 456, 789, 1234, 2345, 3456);
 	}
 
+	public String getStringPayload() {
+		return stringPayload;
+	}
+
+	public BigDecimal getBigDecimalPayload() {
+		return bigDecimalPayload;
+	}
+
+	public ArrayList<Integer> getIntegers() {
+		return integers;
+	}
 }

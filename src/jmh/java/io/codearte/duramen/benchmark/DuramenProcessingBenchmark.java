@@ -3,12 +3,16 @@ package io.codearte.duramen.benchmark;
 import io.codearte.duramen.EventBus;
 import io.codearte.duramen.event.Event;
 import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Level;
+import org.openjdk.jmh.annotations.Measurement;
 import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
+import org.openjdk.jmh.annotations.Warmup;
+
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.io.File;
@@ -21,6 +25,9 @@ import java.lang.reflect.InvocationTargetException;
  */
 @State(Scope.Benchmark)
 @SuppressWarnings({"unchecked", "unused"})
+@Warmup(iterations = 1)
+@Measurement(iterations = 2)
+@Fork(2)
 public class DuramenProcessingBenchmark {
 
 	private EventBus eventBus;
