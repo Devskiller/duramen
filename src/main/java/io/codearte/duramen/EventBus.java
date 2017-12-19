@@ -99,8 +99,8 @@ public class EventBus {
 			eventId = evenBusContext.getDatastore().saveEvent(defaultCoder.toByteArray(event));
 		}
 		if (LOG.isDebugEnabled()) {
-			LOG.debug("Publishing event [id = {}, body={}]",
-					eventId, evenBusContext.getEventJsonSerializer().serializeToJson(event));
+			LOG.debug("Publishing event [id = {}, queueSize={}, body={}]",
+					eventId, evenBusContext.getDatastore().size(), evenBusContext.getEventJsonSerializer().serializeToJson(event));
 		}
 
 		if (TransactionSynchronizationManager.isActualTransactionActive() && isTransactionAwareEvent(event)) {
@@ -128,24 +128,30 @@ public class EventBus {
 		checkNotNull(event);
 		Collection<EventHandler> eventHandlers = handlers.get(event.getClass().getCanonicalName());
 		if (LOG.isDebugEnabled()) {
-			LOG.debug("Processing event id = {} - found {} valid handlers", eventId, eventHandlers.size());
+			LOG.debug("Processing event with id = {} - found {} valid handlers", eventId, eventHandlers.size());
 		}
 		// we should delete if there are no handlers for this event
 		boolean shouldBeDeleted = true;
+		boolean shouldBeRetried = false;
 		for (EventHandler handler : eventHandlers) {
 			shouldBeDeleted = false;
 			try {
 				handler.onEvent(event);
 				shouldBeDeleted = true;
 			} catch (Throwable e) {
-				if (eventShouldBeRetried(event, eventId, e)) {
-					evenBusContext.getExecutorService().schedule(getRunnableProcessor(event, eventId),
-							evenBusContext.getRetryDelayInSeconds(), TimeUnit.SECONDS);
-				} else {
-					evenBusContext.getExceptionHandler().handleException(event, e, handler);
-					shouldBeDeleted = true;
+				if (!shouldBeRetried) {
+					if (eventShouldBeRetried(event, eventId, e)) {
+						shouldBeRetried = true;
+					} else {
+						evenBusContext.getExceptionHandler().handleException(event, e, handler);
+						shouldBeDeleted = true;
+					}
 				}
 			}
+		}
+		if (shouldBeRetried) {
+			evenBusContext.getExecutorService().schedule(getRunnableProcessor(event, eventId),
+					evenBusContext.getRetryDelayInSeconds(), TimeUnit.SECONDS);
 		}
 		if (shouldBeDeleted) {
 			if (LOG.isDebugEnabled()) {

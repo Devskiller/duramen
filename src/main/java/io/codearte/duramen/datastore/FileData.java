@@ -63,6 +63,11 @@ public class FileData implements Datastore {
 		return new HashMap<>(sharedHashMap);
 	}
 
+	@Override
+	public long size() {
+		return sharedHashMap.size();
+	}
+
 	/**
 	 * Closes map before destroying application context
 	 *

@@ -114,11 +114,12 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.jayway.awaitility</groupId>
+            <groupId>org.awaitility</groupId>
             <artifactId>awaitility-groovy</artifactId>
-            <version>1.7.0</version>
+            <version>3.0.0</version>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
 
     <build>

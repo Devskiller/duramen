@@ -1,22 +1,23 @@
 package io.codearte.duramen
 
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicInteger
+
 import io.codearte.duramen.annotation.EnableDuramen
 import io.codearte.duramen.config.DuramenConfiguration
 import io.codearte.duramen.datastore.Datastore
 import io.codearte.duramen.datastore.InMemory
 import io.codearte.duramen.handler.EventHandler
-import org.springframework.context.annotation.AnnotationConfigApplicationContext
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.ComponentScan
-import org.springframework.context.annotation.Configuration
 import spock.lang.Specification
 import test.codearte.duramen.RetryableEventProducer
 import test.codearte.duramen.TestRetryableEvent
 
-import java.util.concurrent.atomic.AtomicBoolean
+import org.springframework.context.annotation.AnnotationConfigApplicationContext
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.ComponentScan
+import org.springframework.context.annotation.Configuration
 
-import static com.jayway.awaitility.Awaitility.await
-import static com.jayway.awaitility.Duration.FIVE_SECONDS
+import static org.awaitility.Awaitility.await
 import static org.hamcrest.core.IsEqual.equalTo
 
 /**
@@ -24,11 +25,12 @@ import static org.hamcrest.core.IsEqual.equalTo
  */
 class RetryableSpec extends Specification {
 
-	static AtomicBoolean goodHandlerInvoked
+	static AtomicInteger goodHandlerInvoked
 
 	void setup() {
 		TestUtil.cleanupDatastore()
-		goodHandlerInvoked = new AtomicBoolean(false)
+		// it's set to 1 due to https://github.com/awaitility/awaitility/issues/99
+		goodHandlerInvoked = new AtomicInteger(1)
 	}
 
 	def "should retry event processing"() {
@@ -38,7 +40,17 @@ class RetryableSpec extends Specification {
 		when:
 			eventProducer.produce()
 		then:
-			await().atMost(FIVE_SECONDS).untilAtomic(goodHandlerInvoked, equalTo(true))
+			await().atMost(5, TimeUnit.SECONDS).untilAtomic(goodHandlerInvoked, equalTo(2))
+	}
+
+	def "should retry single event after failing in two handlers"() {
+		given:
+			def context = new AnnotationConfigApplicationContext(SampleConfiguration, MultipleRetryManyHandlersConfiguration)
+			def eventProducer = context.getBean(RetryableEventProducer)
+		when:
+			eventProducer.produce()
+		then:
+			await().atMost(5, TimeUnit.SECONDS).untilAtomic(goodHandlerInvoked, equalTo(3))
 	}
 
 	def "should retry only limited number of times"() {
@@ -48,7 +60,7 @@ class RetryableSpec extends Specification {
 		when:
 			eventProducer.produce()
 		then:
-			await().atMost(FIVE_SECONDS).untilAtomic(goodHandlerInvoked, equalTo(false))
+			await().atMost(5, TimeUnit.SECONDS).untilAtomic(goodHandlerInvoked, equalTo(1))
 	}
 
 	def "should not retry incorrect exception"() {
@@ -58,7 +70,7 @@ class RetryableSpec extends Specification {
 		when:
 			eventProducer.produce()
 		then:
-			await().atMost(FIVE_SECONDS).untilAtomic(goodHandlerInvoked, equalTo(false))
+			await().atMost(5, TimeUnit.SECONDS).untilAtomic(goodHandlerInvoked, equalTo(1))
 	}
 
 	@ComponentScan(basePackages = "test.codearte.duramen")
@@ -85,6 +97,25 @@ class RetryableSpec extends Specification {
 	}
 
 	@Configuration
+	static class MultipleRetryManyHandlersConfiguration {
+		@Bean
+		DuramenConfiguration duramenConfiguration() {
+			return DuramenConfiguration.builder().retryDelayInSeconds(1).build()
+		}
+
+		@Bean
+		EventHandler eventHandlerA() {
+			return new RetryableEventHandler(1)
+		}
+
+		@Bean
+		EventHandler eventHandlerB() {
+			return new RetryableEventHandler(1)
+		}
+	}
+
+
+	@Configuration
 	static class SingleRetryConfiguration {
 
 		@Bean
@@ -94,7 +125,7 @@ class RetryableSpec extends Specification {
 
 		@Bean
 		EventHandler eventHandler() {
-			return new RetryableEventHandler(1)
+			return new RetryableEventHandler(2)
 		}
 	}
 
@@ -115,8 +146,8 @@ class RetryableSpec extends Specification {
 
 	static class RetryableEventHandler implements EventHandler<TestRetryableEvent> {
 
-		int counter = 0;
-		int max = 0;
+		int counter = 0
+		int max = 0
 
 		RetryableEventHandler(int max) {
 			this.max = max
@@ -125,10 +156,10 @@ class RetryableSpec extends Specification {
 		@Override
 		void onEvent(TestRetryableEvent event) {
 			if (counter < max) {
-				counter++;
-				throw new RuntimeException();
+				counter++
+				throw new RuntimeException()
 			}
-			goodHandlerInvoked.set(true)
+			goodHandlerInvoked.incrementAndGet()
 		}
 	}
 

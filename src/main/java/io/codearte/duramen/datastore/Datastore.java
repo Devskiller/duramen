@@ -32,4 +32,6 @@ public interface Datastore {
 	 * @return events Map&lt;eventId, eventAsBytes&gt;
 	 */
 	Map<Long, byte[]> getStoredEvents();
+
+	long size();
 }

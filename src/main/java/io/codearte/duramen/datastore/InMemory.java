@@ -38,4 +38,9 @@ public class InMemory implements Datastore {
 	public Map<Long, byte[]> getStoredEvents() {
 		return new HashMap<>(hashMap);
 	}
+
+	@Override
+	public long size() {
+		return hashMap.size();
+	}
 }

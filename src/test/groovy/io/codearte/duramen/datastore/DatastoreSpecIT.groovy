@@ -21,6 +21,9 @@ class DatastoreSpecIT extends Specification {
 			def eventsMap = datastore.getStoredEvents()
 			eventsMap.containsKey(eventId)
 			eventsMap.get(eventId) == eventBytes
+			datastore.size() == 1
+			datastore.deleteEvent(eventId)
+			datastore.size() == 0
 		where:
 			datastore << [new InMemory(), new FileData(FILENAME, 1024, 4096)]
 	}
