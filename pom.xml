@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.devskiller.duramen</groupId>
     <artifactId>duramen</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>1.1.1</version>
     <packaging>jar</packaging>
 
     <name>duramen</name>
@@ -183,7 +182,7 @@
         <connection>scm:git:https://github.com/Devskiller/duramen.git</connection>
         <developerConnection>scm:git:git@github.com:Devskiller/duramen.git</developerConnection>
         <url>https://github.com/Devskiller/duramen/</url>
-        <tag>HEAD</tag>
+        <tag>duramen-1.1.1</tag>
     </scm>
 
     <distributionManagement>
@@ -291,7 +290,7 @@
                                     <executable>java</executable>
                                     <arguments>
                                         <argument>-classpath</argument>
-                                        <classpath/>
+                                        <classpath />
                                         <argument>org.openjdk.jmh.Main</argument>
                                         <argument>.*</argument>
                                     </arguments>
