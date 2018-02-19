@@ -1,11 +1,11 @@
-# Duramen [![Build Status](https://travis-ci.org/Devskiller/duramen.svg?branch=master)](https://travis-ci.org/Devskiller/duramen) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.codearte.duramen/duramen/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.codearte.duramen/duramen)
+# Duramen [![Build Status](https://travis-ci.org/Devskiller/duramen.svg?branch=master)](https://travis-ci.org/Devskiller/duramen) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.devskiller.duramen/duramen/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.devskiller.duramen/duramen)
 
 Persistent event bus implementation for Java. Easily integrates with Spring Framework. By default uses file backed database. Guarantees that event will be dispatched.
 
 ## Usage
 
 1) Add Duramen dependency:
-  `io.codearte.duramen:duramen:1.1.2`
+  `com.devskiller.duramen:duramen:1.1.2`
 
 2) Use ```@EnableDuramen``` annotation to import Duramen into your project:
 ```java
