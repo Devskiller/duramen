@@ -60,6 +60,9 @@ class DuramenConfigurator implements ApplicationListener<ContextRefreshedEvent> 
 			eventBus.register(generic.getCanonicalName(), eventHandler);
 		}
 
-		eventBus.processSavedEvents();
+		Thread thread = new Thread(eventBus::processSavedEvents);
+		thread.setDaemon(true);
+		thread.setName("Duramen-Saved-Events");
+		thread.start();
 	}
 }
