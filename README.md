@@ -5,7 +5,7 @@ Persistent event bus implementation for Java. Easily integrates with Spring Fram
 ## Usage
 
 1) Add Duramen dependency:
-  `io.codearte.duramen:duramen:1.1.0`
+  `io.codearte.duramen:duramen:1.1.2`
 
 2) Use ```@EnableDuramen``` annotation to import Duramen into your project:
 ```java
