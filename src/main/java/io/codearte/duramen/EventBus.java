@@ -105,13 +105,23 @@ public class EventBus {
 
 		if (TransactionSynchronizationManager.isActualTransactionActive() && isTransactionAwareEvent(event)) {
 			if (LOG.isDebugEnabled()) {
-				LOG.debug("Event {} will be processed after transaction commit", eventId);
+				LOG.debug("Event will be processed after transaction commit: id={}", eventId);
 			}
 			TransactionSynchronizationManager.registerSynchronization(
 					new TransactionSynchronizationAdapter() {
 						@Override
 						public void afterCommit() {
 							evenBusContext.getExecutorService().submit(getRunnableProcessor(event, eventId));
+						}
+
+						@Override
+						public void afterCompletion(int status) {
+							if (status == STATUS_ROLLED_BACK) {
+								if (LOG.isDebugEnabled()) {
+									LOG.debug("Transaction rolled back -> removing event: id={}", eventId);
+								}
+								evenBusContext.getDatastore().deleteEvent(eventId);
+							}
 						}
 					});
 		} else {
